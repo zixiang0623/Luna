@@ -77,6 +77,17 @@ dialog input,dialog textarea{width:100%;background:#ffffffaa;border:1px solid va
 #fs{padding:0;width:96vw;height:92dvh;max-width:none;max-height:none;border-radius:14px;overflow:hidden;position:relative}
 #fs iframe{width:100%;height:100%;border:0;background:#fff;display:block}
 #fx{position:absolute;top:8px;right:8px;width:34px;height:34px;justify-content:center;border-radius:50%;background:#3b2a20cc;color:#fff}
+#mn{max-width:46vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#mp{padding:0;width:min(520px,94vw);max-height:80dvh;overflow:hidden}#mp[open]{display:flex;flex-direction:column}
+.mph{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--bd);color:var(--mu)}
+.mph input{flex:1;width:auto;border:0;outline:0;background:none;padding:4px;color:var(--tx)}
+#ml{overflow:auto;padding:6px 8px 10px}.mg{padding:8px 10px 2px;color:var(--mu);font-size:12px;letter-spacing:.06em}
+.mi{display:flex;width:100%;justify-content:space-between;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;text-align:left}
+.mi:hover,.mi.on{background:#ffffffaa}.mi span{display:flex;flex-direction:column;min-width:0}.mi b{font-weight:500}
+.mi small{color:var(--mu);font-size:11px;overflow:hidden;text-overflow:ellipsis}
+.mi em{font-style:normal;font-size:11px;color:var(--mu);border:1px solid var(--bd);border-radius:999px;padding:0 8px;flex:none}
+#gwl{max-height:150px;overflow:auto;border:1px solid var(--bd);border-radius:10px;padding:4px 8px;margin:6px 0}
+#gwl label{display:flex;gap:8px;align-items:center;margin:2px 0;color:var(--tx);font-size:13px}#gwl input{width:auto}#gwl small{color:var(--mu);font-size:11px}
 @media(max-width:760px){aside{position:fixed;inset:0 auto 0 0;transform:translateX(-100%)}aside.open{transform:none}#menu{display:inline-flex}#sx{display:inline-flex}#scrim{position:fixed;inset:0;background:#3b2a2055;z-index:4;display:none}aside.open+#scrim{display:block}}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important}}
 </style></head><body>
@@ -84,19 +95,22 @@ dialog input,dialog textarea{width:100%;background:#ffffffaa;border:1px solid va
 <div id="app">
 <aside id="side"><div class="brand"><i data-lucide="moon"></i>Luna<button id="sx" aria-label="閉じる"><i data-lucide="x"></i></button></div><button id="new"><i data-lucide="plus"></i>新しいチャット</button><div id="list"></div><button id="cfg"><i data-lucide="settings"></i>設定</button></aside><div id="scrim"></div>
 <main>
-<header><button id="menu"><i data-lucide="menu"></i></button><select id="model"></select></header>
+<header><button id="menu"><i data-lucide="menu"></i></button><button id="model"><i data-lucide="cpu"></i><span id="mn"></span><i data-lucide="chevron-down"></i></button></header>
 <div id="scroll">
 <div id="empty"><h1 id="gr"></h1><p>Workers AI のモデルとチャット</p>
 <div class="chips"><button>今夜の空について教えて</button><button>短い詩を書いて</button><button>JavaScriptで時計を作って</button><button>アイデア出しを手伝って</button></div></div>
 <div id="msgs"></div></div>
 <footer><div class="box"><textarea id="in" rows="1" placeholder="Lunaに話しかける…"></textarea><button id="send"><i data-lucide="arrow-up" class="i-send"></i><i data-lucide="square" class="i-stop"></i></button></div></footer>
 </main></div>
+<dialog id="mp"><div class="mph"><i data-lucide="search"></i><input id="mq" placeholder="モデルを検索(名前・ID・提供元)" autocomplete="off"><button id="mpx" type="button" aria-label="閉じる"><i data-lucide="x"></i></button></div><div id="ml"></div></dialog>
 <dialog id="fs"><button id="fx" aria-label="閉じる"><i data-lucide="x"></i></button><iframe sandbox="allow-scripts allow-forms allow-modals allow-popups"></iframe></dialog>
 <dialog id="dlg"><div class="dh"><b>設定</b><button id="x" type="button" aria-label="閉じる"><i data-lucide="x"></i></button></div>
 <label>システムプロンプト</label><textarea id="c_sys" rows="3" placeholder="例: あなたは親切なアシスタントです"></textarea>
 <label>Temperature <span id="c_tv"></span></label><input id="c_t" type="range" min="0" max="1.5" step=".1">
 <label>最大トークン数</label><input id="c_max" type="number" min="128" max="16384" step="128">
 <label>モデルID直接指定(任意) 例: @cf/...</label><input id="c_mid">
+<label style="display:flex;gap:8px;align-items:center;color:var(--tx)"><input type="checkbox" id="c_gw" style="width:auto">AI Gatewayのモデルを有効にする</label>
+<div id="gwbox"><small id="gwnote" style="color:var(--mu)"></small><div id="gwl"></div><label>追加モデルID(1行に1つ 例: openai/gpt-4o)</label><textarea id="c_gwc" rows="2"></textarea></div>
 <label>アクセスキー(Worker側でACCESS_KEYを設定した場合)</label><input id="c_key" type="password">
 <label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="c_art" style="width:auto">HTMLアーティファクト(AIがHTMLを作成しプレビュー表示)</label><button id="ok">保存</button></dialog>
 <script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
@@ -183,20 +197,36 @@ $("#msgs").onclick=e=>{const b=e.target.closest("button");if(!b)return;const m=b
  else if(b.dataset.dl!==undefined){const c=b.closest(".code"),a=document.createElement("a");a.href=URL.createObjectURL(new Blob([c.querySelector("code").textContent],{type:"text/html"}));a.download=(c.querySelector("span").textContent||"luna").replace(/[^\w\u3040-\u9fff-]+/g,"_")+".html";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1e3)}};
 $("#fx").onclick=()=>$("#fs").close();$("#fs").onclose=()=>$("#fs iframe").srcdoc="";
 document.querySelectorAll(".chips button").forEach(b=>b.onclick=()=>send(b.textContent));
-$("#model").onchange=e=>{cfg.model=e.target.value;S("luna.cfg",cfg)};
-function addModel(id,label){const o=document.createElement("option");o.value=id;o.textContent=label;$("#model").append(o)}
-function openCfg(){$("#side").classList.remove("open");$("#c_art").checked=cfg.art!==false;$("#c_sys").value=cfg.system;$("#c_t").value=cfg.temp;$("#c_tv").textContent=cfg.temp;$("#c_max").value=cfg.max;$("#c_key").value=cfg.key;$("#c_mid").value="";$("#dlg").showModal()}
+
+const CAT={cf:[],gw:[],gwOk:false};
+const gwList=()=>cfg.gw?[...CAT.gw.filter(m=>(cfg.gwOn||[]).includes(m.id)),...(cfg.gwCustom||"").split("\n").map(x=>x.trim()).filter(x=>/^[\w.-]+\/[\w.:@\/-]+$/.test(x)).map(id=>({id,name:id,tag:"カスタム"}))]:[];
+const allModels=()=>[...CAT.cf.map(m=>({...m,g:"Workers AI"})),...gwList().map(m=>({...m,g:"AI Gateway"}))];
+const setModelLabel=()=>{$("#mn").textContent=(allModels().find(m=>m.id==cfg.model)||{name:cfg.model}).name};
+function renderModels(q0=""){const q=q0.toLowerCase().trim(),ms=allModels().filter(m=>!q||(m.name+" "+m.id+" "+m.tag+" "+m.g).toLowerCase().includes(q));let h="",g="";
+ for(const m of ms){if(m.g!=g){g=m.g;h+=`<div class="mg">${m.g}</div>`}h+=`<button class="mi${m.id==cfg.model?" on":""}" data-id="${E(m.id)}"><span><b>${E(m.name)}</b><small>${E(m.id)}</small></span><em>${E(m.tag)}</em></button>`}
+ if(!ms.length&&/^(@cf\/)?[\w.-]+\/[\w.:@\/-]+$/.test(q0.trim()))h=`<button class="mi" data-id="${E(q0.trim())}"><span><b>このIDを使う</b><small>${E(q0.trim())}</small></span></button>`;
+ $("#ml").innerHTML=h||'<div class="mg">該当するモデルがありません</div>'}
+$("#model").onclick=()=>{$("#mq").value="";renderModels();$("#mp").showModal();$("#mq").focus()};
+$("#mq").oninput=e=>renderModels(e.target.value);
+$("#mq").onkeydown=e=>{if(e.key=="Enter"&&!e.isComposing){const f=$("#ml .mi");if(f)f.click()}};
+$("#ml").onclick=e=>{const b=e.target.closest(".mi");if(!b)return;cfg.model=b.dataset.id;S("luna.cfg",cfg);setModelLabel();$("#mp").close()};
+$("#mpx").onclick=()=>$("#mp").close();
+$("#mp").onclick=e=>{const r=e.currentTarget.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)e.currentTarget.close()};
+function openCfg(){$("#side").classList.remove("open");$("#c_art").checked=cfg.art!==false;$("#c_sys").value=cfg.system;$("#c_t").value=cfg.temp;$("#c_tv").textContent=cfg.temp;$("#c_max").value=cfg.max;$("#c_key").value=cfg.key;$("#c_mid").value="";$("#c_gw").checked=!!cfg.gw;$("#c_gw").disabled=!CAT.gwOk;$("#c_gwc").value=cfg.gwCustom||"";
+ $("#gwnote").textContent=CAT.gwOk?"有効にすると、モデル選択にAI Gatewayのモデルが加わります。":"WorkerにCF_ACCOUNT_IDとGATEWAY_IDが未設定のため、まだ使えません(README参照)。";
+ $("#gwl").innerHTML=CAT.gw.map(m=>`<label><input type="checkbox" value="${E(m.id)}"${(cfg.gwOn||[]).includes(m.id)?" checked":""}>${E(m.name)}<small>${E(m.id)}</small></label>`).join("");$("#dlg").showModal()}
 $("#cfg").onclick=openCfg;$("#c_t").oninput=e=>$("#c_tv").textContent=e.target.value;
 $("#x").onclick=()=>$("#dlg").close();
 $("#dlg").onclick=e=>{const r=e.currentTarget.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)e.currentTarget.close()};
 $("#ok").onclick=()=>{try{cfg.art=$("#c_art").checked;cfg.system=$("#c_sys").value;cfg.temp=+$("#c_t").value;cfg.max=+$("#c_max").value||2048;cfg.key=$("#c_key").value;
- const mid=$("#c_mid").value.trim();if(mid){cfg.model=mid;if(![...$("#model").options].some(o=>o.value==mid))addModel(mid,mid);$("#model").value=mid}
- S("luna.cfg",cfg)}finally{$("#dlg").close()}};
+ cfg.gw=$("#c_gw").checked;cfg.gwOn=[...document.querySelectorAll("#gwl input:checked")].map(x=>x.value);cfg.gwCustom=$("#c_gwc").value;
+ if(!cfg.gw&&!cfg.model.startsWith("@cf/"))cfg.model=CAT.cf[0]?.id||cfg.model;
+ const mid=$("#c_mid").value.trim();if(mid)cfg.model=mid;
+ S("luna.cfg",cfg);setModelLabel()}finally{$("#dlg").close()}};
 
 /* ===== 起動 ===== */
 const h=new Date().getHours();$("#gr").textContent=(h<5?"こんばんは":h<11?"おはようございます":h<18?"こんにちは":"こんばんは")+"。ご用件をお聞かせください。";
 
-fetch("/api/models").then(r=>r.json()).then(d=>{d.models.forEach(m=>addModel(m.id,`${m.name} — ${m.tag}`))}).catch(()=>{}).finally(()=>{
- if(![...$("#model").options].some(o=>o.value==cfg.model))addModel(cfg.model,cfg.model);$("#model").value=cfg.model});
+fetch("/api/models").then(r=>r.json()).then(d=>{CAT.cf=d.models;CAT.gw=d.gateway?.models||[];CAT.gwOk=!!d.gateway?.available}).catch(()=>{}).finally(setModelLabel);
 ui();paint();ic();
 </script></body></html>
