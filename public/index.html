@@ -88,8 +88,8 @@ dialog input,dialog textarea{width:100%;background:#ffffffaa;border:1px solid va
 .mi em{font-style:normal;font-size:11px;color:var(--mu);border:1px solid var(--bd);border-radius:999px;padding:0 8px;flex:none}
 #gwl{max-height:150px;overflow:auto;border:1px solid var(--bd);border-radius:10px;padding:4px 8px;margin:6px 0}
 #gwl label{display:flex;gap:8px;align-items:center;margin:2px 0;color:var(--tx);font-size:13px}#gwl input{width:auto}#gwl small{color:var(--mu);font-size:11px}
-#web,#wiki{flex:none;position:relative;width:36px;height:36px;border-radius:50%;justify-content:center;color:var(--mu);transition:.2s}
-#web:hover,#wiki:hover{background:#8c64201a}#web.on,#wiki.on{background:var(--tx);color:var(--bg)}
+#mic,#wiki{flex:none;position:relative;width:36px;height:36px;border-radius:50%;justify-content:center;color:var(--mu);transition:.2s}
+#mic:hover,#wiki:hover{background:#8c64201a}#mic.on,#wiki.on{background:var(--tx);color:var(--bg)}#mic[hidden]{display:none}#mic.on{background:#c0432f;color:#fff;animation:mp 1.2s infinite}@keyframes mp{50%{box-shadow:0 0 0 6px #c0432f33}}
 #web small{position:absolute;top:-3px;right:-5px;font-size:9px;line-height:14px;padding:0 4px;border-radius:7px;background:var(--dot);color:#fff}
 .nt{color:var(--mu);font-size:12px}.st{margin-left:10px;color:var(--mu);font-size:12px}
 .src{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.src:empty{display:none}
@@ -107,7 +107,7 @@ dialog input,dialog textarea{width:100%;background:#ffffffaa;border:1px solid va
 <div id="empty"><h1 id="gr"></h1><p>Workers AI のモデルとチャット</p>
 <div class="chips"><button>今夜の空について教えて</button><button>短い詩を書いて</button><button>JavaScriptで時計を作って</button><button>アイデア出しを手伝って</button></div></div>
 <div id="msgs"></div></div>
-<footer><div class="box"><button id="wiki" title="Wikipedia検索"><i data-lucide="book-open"></i></button><button id="web" title="Web検索(β)"><i data-lucide="globe"></i><small>β</small></button><textarea id="in" rows="1" placeholder="Lunaに話しかける…"></textarea><button id="send"><i data-lucide="arrow-up" class="i-send"></i><i data-lucide="square" class="i-stop"></i></button></div></footer>
+<footer><div class="box"><button id="wiki" title="Wikipedia検索"><i data-lucide="book-open"></i></button><button id="mic" title="音声入力" hidden><i data-lucide="mic"></i></button><textarea id="in" rows="1" placeholder="Lunaに話しかける…"></textarea><button id="send"><i data-lucide="arrow-up" class="i-send"></i><i data-lucide="square" class="i-stop"></i></button></div></footer>
 </main></div>
 <dialog id="mp"><div class="mph"><i data-lucide="search"></i><input id="mq" placeholder="モデルを検索(名前・ID・提供元)" autocomplete="off"><button id="mpx" type="button" aria-label="閉じる"><i data-lucide="x"></i></button></div><div id="ml"></div></dialog>
 <dialog id="fs"><button id="fx" aria-label="閉じる"><i data-lucide="x"></i></button><iframe sandbox="allow-scripts allow-forms allow-modals allow-popups"></iframe></dialog>
@@ -153,7 +153,7 @@ function draw(e,m,live){
  if(th&&(m.content||!live)&&!th.classList.contains("out")){th.classList.add("out");setTimeout(()=>th.remove(),500)}
  if(m.think){rs.hidden=false;rs.querySelector("div").textContent=m.think;if(live&&!m.content)rs.open=true;else if(live&&!rs.dataset.c){rs.open=false;rs.dataset.c=1}}
  an.innerHTML=md(m.content,live||cfg.art===false)+(live&&m.content?'<i class="cur"></i>':"")+(m.err?`<div class="err">⚠ ${E(m.err)}</div>`:"");
- e.querySelector(".src").innerHTML=(m.src||[]).map((x,i)=>`<a href="${E(x.url)}" target="_blank" rel="noopener"><i data-lucide="${x.k=="web"?"globe":"book-open"}"></i>[${i+1}] ${E(x.title)}</a>`).join("")+(m.note?`<span class="nt">${E(m.note)}</span>`:"");ft.innerHTML=live?"":`${E((m.model||"").split("/").pop())}${m.ms?" · "+(m.ms/1000).toFixed(1)+"秒":""}<button data-cm title="コピー">${CP}</button>${e._last?'<button data-re title="再生成"><i data-lucide="refresh-cw"></i></button>':""}`;ic()}
+ e.querySelector(".src").innerHTML=(m.src||[]).map((x,i)=>`<a href="${E(x.url)}" target="_blank" rel="noopener"><i data-lucide="${x.k=="web"?"globe":"book-open"}"></i>[${i+1}] ${E(x.title)}</a>`).join("")+(m.note?`<span class="nt">${E(m.note)}</span>`:"");ft.innerHTML=live?"":`${E((m.model||"").split("/").pop())}${m.ms?" · "+(m.ms/1000).toFixed(1)+"秒":""}<button data-tts title="読み上げ"><i data-lucide="volume-2"></i></button><button data-cm title="コピー">${CP}</button>${e._last?'<button data-re title="再生成"><i data-lucide="refresh-cw"></i></button>':""}`;ic()}
 function msgEl(m,live,last){const e=document.createElement("div");e.className="m "+m.role;
  if(m.role=="user"){e.innerHTML=`<div class="u">${E(m.content).replace(/\n/g,"<br>")}</div>`;return e}
  e.innerHTML=`<div class="av"><i data-lucide="moon"></i></div><div class="bd">${live?'<div class="th"><div class="typing"><i></i><i></i><i></i></div><small class="st"></small></div>':""}<details class="rs" hidden><summary>思考のしずく</summary><div></div></details><div class="ans"></div><div class="src"></div><div class="ft"></div></div>`;
@@ -174,7 +174,7 @@ async function gen(){
  try{
   let ctx="";
   if(cfg.wiki||cfg.web){const st=el.querySelector(".st"),q=cur.msgs[cur.msgs.length-2].content,H={"content-type":"application/json","x-luna-key":cfg.key},all=[];
-   for(const [on,path,k,label] of [[cfg.wiki,"/api/search","wiki","Wikipedia"],[cfg.web,"/api/websearch","web","Web"]]){if(!on)continue;
+   for(const [on,path,k,label] of [[cfg.wiki,"/api/search","wiki","Wikipedia"]]){if(!on)continue;
     if(st)st.textContent=label+"を検索中…";
     try{const sr=await fetch(path,{method:"POST",signal:ctl.signal,headers:H,body:JSON.stringify({q})}).then(r=>r.json());all.push(...(sr.results||[]).map(x=>({...x,k})));if(sr.error&&k=="web")m.note=sr.error}
     catch(e){if(e.name=="AbortError")throw e}}
@@ -197,8 +197,14 @@ async function gen(){
 const go=()=>{if(busy)return ctl?.abort();const t=$("#in").value;$("#in").value="";$("#in").style.height="";send(t)};
 
 /* ===== イベント ===== */
-$("#send").onclick=go;if(cfg.wiki===undefined){cfg.wiki=!!cfg.web;cfg.web=false}
-["wiki","web"].forEach(k=>{const b=$("#"+k);b.classList.toggle("on",!!cfg[k]);b.onclick=()=>{cfg[k]=!cfg[k];S("luna.cfg",cfg);b.classList.toggle("on",cfg[k])}});
+$("#send").onclick=go;
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=null;
+if(SR){$("#mic").hidden=false;$("#mic").onclick=()=>{if(rec){rec.stop();return}
+ rec=new SR();rec.lang="ja-JP";rec.interimResults=true;const base=$("#in").value;
+ rec.onresult=e=>{let t="";for(const x of e.results)t+=x[0].transcript;$("#in").value=base+t;$("#in").dispatchEvent(new Event("input"))};
+ rec.onend=rec.onerror=()=>{rec=null;$("#mic").classList.remove("on")};
+ $("#mic").classList.add("on");rec.start()}}if(cfg.wiki===undefined){cfg.wiki=!!cfg.web;cfg.web=false}
+["wiki"].forEach(k=>{const b=$("#"+k);b.classList.toggle("on",!!cfg[k]);b.onclick=()=>{cfg[k]=!cfg[k];S("luna.cfg",cfg);b.classList.toggle("on",cfg[k])}});
 $("#in").onkeydown=e=>{if(e.key=="Enter"&&!e.shiftKey&&!e.isComposing&&e.keyCode!=229){e.preventDefault();go()}};
 $("#in").oninput=e=>{const t=e.target;t.style.height="auto";t.style.height=t.scrollHeight+"px"};
 $("#new").onclick=()=>{if(busy)return;cur=null;paint();ui();$("#side").classList.remove("open")};
@@ -208,6 +214,8 @@ $("#list").onclick=e=>{if(busy)return;const ci=e.target.closest(".ci");if(!ci)re
 $("#msgs").onclick=e=>{const b=e.target.closest("button");if(!b)return;const m=b.closest(".m");
  if(b.dataset.cp!==undefined||b.dataset.cm!==undefined){navigator.clipboard.writeText(b.dataset.cp!==undefined?b.closest(".code").querySelector("code").textContent:m._m.content);b.classList.add("done");setTimeout(()=>b.classList.remove("done"),1200)}
  else if(b.dataset.re!==undefined&&!busy){cur.msgs.pop();gen()}
+ else if(b.dataset.tts!==undefined){const sy=speechSynthesis;if(sy.speaking){sy.cancel();return}
+  const u=new SpeechSynthesisUtterance(m._m.content.replace(/```[\s\S]*?```/g,"コードは省略します。").replace(/\(https?:[^)]*\)/g,"").replace(/[*#`>_\[\]]/g,""));u.lang="ja-JP";sy.speak(u)}
  else if(b.dataset.tab){const c=b.closest(".code"),pv=b.dataset.tab=="p";c.querySelector("iframe").hidden=!pv;c.querySelector("pre").hidden=pv;c.querySelectorAll("[data-tab]").forEach(x=>x.classList.toggle("on",x==b))}
  else if(b.dataset.full!==undefined){$("#fs iframe").srcdoc=b.closest(".code").querySelector("code").textContent;$("#fs").showModal()}
  else if(b.dataset.dl!==undefined){const c=b.closest(".code"),a=document.createElement("a");a.href=URL.createObjectURL(new Blob([c.querySelector("code").textContent],{type:"text/html"}));a.download=(c.querySelector("span").textContent||"luna").replace(/[^\w\u3040-\u9fff-]+/g,"_")+".html";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1e3)}};

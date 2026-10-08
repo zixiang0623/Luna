@@ -24,10 +24,5 @@ Luna の設定 → 「AI Gatewayのモデルを有効にする」で使うモデ
 入力欄の📖ボタンをオンにすると、質問からキーワードを抜き出してWikipedia(日本語→英語)を検索し、上位の記事をAIに渡します。
 AIは出典の文章を写さず、内容を自分の言葉でまとめ、根拠にした記事を[1]のように番号で示します。出典は回答の下にリンクで表示されます。
 
-## Web検索(β)
-🌐ボタンをオンにすると、Web全体を検索します。使う検索サービスはsecretで選びます(上にあるものが優先)。
-- **Google検索**: `npx wrangler secret put GEMINI_API_KEY`(Google AI Studioで発行。GeminiのGoogle検索グラウンディングを使います)
-- `npx wrangler secret put TAVILY_API_KEY`
-- `npx wrangler secret put BRAVE_API_KEY`
-
-どれも無い場合はDuckDuckGoを直接読みにいきますが、ブロックされることがあり不安定です。
+## 音声入力・読み上げ
+入力欄の🎤で音声入力(日本語)、回答の🔊で読み上げ。ブラウザの音声機能を使うので設定は不要です(音声入力はChrome/Safari向け)。
