@@ -5,86 +5,86 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='26'%3E🌙%3C/text%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#070914;--tx:#e9ecf8;--mu:#8b93b2;--ln:#ffffff17;--a:#a99cff;--b:#7fd6ff;--g:#ffe7a3}
+:root{--bg:#ffe7cf;--lt:#fff5eb;--tx:#3b2a20;--mu:#8a7060;--ln:#7a4e2a26;--a:#b88a4a;--b:#e3b79a;--g:#8c6420;--gl:#ffffff8c}
 *{box-sizing:border-box}html,body{height:100%;margin:0}
-body{background:radial-gradient(120% 80% at 50% -10%,#18204a,var(--bg) 62%);color:var(--tx);font:15px/1.85 "Zen Kaku Gothic New",system-ui,sans-serif;overflow:hidden}
+body{background:radial-gradient(110% 80% at 50% -10%,var(--lt),var(--bg) 60%,#edceb3);color:var(--tx);font:15px/1.85 "Zen Kaku Gothic New",system-ui,sans-serif;overflow:hidden}
 button,select,textarea,input{font:inherit;color:inherit}button{cursor:pointer;background:none;border:0}
 #bg,.aurora{position:fixed;inset:0;pointer-events:none}
-.aurora{filter:blur(80px);opacity:.3;transition:opacity 1.6s;overflow:hidden}
-.aurora::before,.aurora::after{content:"";position:absolute;width:55vw;height:55vw;border-radius:50%;animation:dr 20s ease-in-out infinite alternate}
-.aurora::before{left:-12vw;top:-14vw;background:#6c5cff}
-.aurora::after{right:-14vw;bottom:-18vw;background:#16b4d8;animation-delay:-10s}
-body.think .aurora{opacity:.65}
+.aurora{filter:blur(90px);opacity:.45;transition:opacity 1.6s;overflow:hidden}
+.aurora::before,.aurora::after{content:"";position:absolute;width:55vw;height:55vw;border-radius:50%;animation:dr 22s ease-in-out infinite alternate}
+.aurora::before{left:-12vw;top:-14vw;background:#fff4e8}
+.aurora::after{right:-14vw;bottom:-18vw;background:#f0c08a;animation-delay:-11s}
+body.think .aurora{opacity:.9}
 @keyframes dr{to{transform:translate(14vw,9vw) scale(1.25)}}
 #app{position:relative;display:flex;height:100%}
-aside{width:270px;flex:none;display:flex;flex-direction:column;gap:10px;padding:18px 14px;background:#090c1bcc;backdrop-filter:blur(20px);border-right:1px solid var(--ln);z-index:5;transition:transform .3s}
-.brand{font:700 26px "Shippori Mincho",serif;letter-spacing:.1em;background:linear-gradient(90deg,var(--g),#fff,var(--b));-webkit-background-clip:text;background-clip:text;color:transparent;padding:2px 8px}
-#new,#cfg{padding:10px;border-radius:12px;border:1px solid var(--ln);background:#ffffff0a;transition:.2s}
-#new:hover,#cfg:hover,.ci:hover{background:#ffffff14}
+aside{width:270px;flex:none;display:flex;flex-direction:column;gap:10px;padding:18px 14px;background:#fff7f0a6;backdrop-filter:blur(20px);border-right:1px solid var(--ln);z-index:5;transition:transform .3s}
+.brand{font:600 28px "Shippori Mincho",serif;letter-spacing:.16em;background:linear-gradient(90deg,#8c6420,#dcb870,#8c6420);-webkit-background-clip:text;background-clip:text;color:transparent;padding:2px 8px}
+#new,#cfg{padding:10px;border-radius:12px;border:1px solid var(--ln);background:var(--gl);transition:.2s}
+#new:hover,#cfg:hover,.ci:hover{background:#ffffffc0}
 #list{flex:1;overflow:auto;display:flex;flex-direction:column;gap:2px}
 .ci{display:flex;justify-content:space-between;gap:6px;padding:8px 10px;border-radius:10px;cursor:pointer;color:var(--mu);font-size:13.5px;line-height:1.5}
-.ci span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ci.on{background:#a99cff22;color:var(--tx)}
+.ci span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ci.on{background:#b88a4a22;color:var(--tx)}
 .ci button{opacity:0;color:var(--mu)}.ci:hover button{opacity:1}
 main{flex:1;min-width:0;display:flex;flex-direction:column}
 header{display:flex;align-items:center;gap:8px;padding:12px 18px}
 #menu{display:none;font-size:20px}
-#model{background:#ffffff0d;border:1px solid var(--ln);border-radius:999px;padding:7px 14px;max-width:100%;outline:0}
-#model option{background:#10142b}
+#model{background:var(--gl);border:1px solid var(--ln);border-radius:999px;padding:7px 14px;max-width:100%;outline:0}
+#model option{background:#fff3e8}
 #scroll{flex:1;overflow:auto;padding:10px 18px 30px}
 #empty{max-width:760px;margin:4vh auto 0;text-align:center}
-#empty h1{font:500 30px "Shippori Mincho",serif;margin:0 0 4px}#empty p{color:var(--mu);margin:0 0 22px}
+#empty h1{font:500 30px "Shippori Mincho",serif;margin:0 0 4px;letter-spacing:.06em}#empty p{color:var(--mu);margin:0 0 22px}
 .chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
-.chips button{padding:10px 16px;border-radius:14px;border:1px solid var(--ln);background:#ffffff0a;transition:.25s}
-.chips button:hover{transform:translateY(-3px);border-color:var(--a);box-shadow:0 8px 30px #a99cff33}
+.chips button{padding:10px 16px;border-radius:14px;border:1px solid var(--ln);background:var(--gl);transition:.25s}
+.chips button:hover{transform:translateY(-3px);border-color:var(--a);box-shadow:0 8px 30px #b88a4a33}
 .m{display:flex;gap:12px;margin:22px auto;max-width:760px;animation:up .5s both}
 @keyframes up{from{opacity:0;transform:translateY(10px)}}
 .m.user{justify-content:flex-end}
-.u{background:linear-gradient(135deg,#a99cff30,#7fd6ff1c);border:1px solid #ffffff1c;padding:9px 16px;border-radius:18px 18px 4px 18px;max-width:85%;overflow-wrap:anywhere}
-.av{flex:none;width:30px;height:30px;margin-top:4px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fffaf0,#cfc4a8 70%);box-shadow:0 0 16px #ffe7a344}
+.u{background:linear-gradient(135deg,#fffaf4,#fbe3cf);border:1px solid #b88a4a33;box-shadow:0 4px 16px #8c642018;padding:9px 16px;border-radius:18px 18px 4px 18px;max-width:85%;overflow-wrap:anywhere}
+.av{flex:none;width:30px;height:30px;margin-top:4px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fffdf8,#e6c487 75%);box-shadow:0 0 16px #c9a06355}
 body.think .m:last-child .av{animation:pl 1.8s ease-in-out infinite}
-@keyframes pl{50%{box-shadow:0 0 30px #ffe7a3aa,0 0 60px #a99cff66}}
+@keyframes pl{50%{box-shadow:0 0 30px #d9b36ccc,0 0 60px #f0c08a99}}
 .bd{flex:1;min-width:0}
 .th{display:flex;align-items:center;gap:2px;max-height:130px;transition:.5s}
 .th.out{opacity:0;transform:scale(.85);max-height:0;overflow:hidden}
 .th small{display:block;color:var(--mu);font-size:12px}
-.sh{background:linear-gradient(90deg,#8b93b2 20%,#fff 50%,#8b93b2 80%);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:sh 2.2s linear infinite}
+.sh{background:linear-gradient(90deg,#8a7060 20%,#d4a24f 50%,#8a7060 80%);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:sh 2.4s linear infinite;letter-spacing:.08em}
 @keyframes sh{to{background-position:-200% 0}}
-.rs{margin:4px 0 10px;border:1px solid var(--ln);border-radius:12px;padding:6px 12px;color:var(--mu);font-size:13px;background:#ffffff08}
+.rs{margin:4px 0 10px;border:1px solid var(--ln);border-radius:12px;padding:6px 12px;color:var(--mu);font-size:13px;background:#ffffff66}
 .rs summary{cursor:pointer}.rs div{white-space:pre-wrap;max-height:200px;overflow:auto;margin-top:6px}
 .ans{overflow-wrap:anywhere}.ans p{margin:.5em 0}.ans h2,.ans h3,.ans h4,.ans h5{font-family:"Shippori Mincho",serif;margin:1em 0 .3em}
-.ans code{background:#ffffff14;padding:1px 6px;border-radius:6px;font:13px "JetBrains Mono",monospace}
-.ans a{color:var(--b)}.ans blockquote{margin:.5em 0;padding-left:12px;border-left:2px solid var(--a);color:var(--mu)}
-.code{margin:.8em 0;border:1px solid var(--ln);border-radius:12px;overflow:hidden;background:#05070f}
-.code>div{display:flex;justify-content:space-between;padding:4px 12px;background:#ffffff0c;color:var(--mu);font-size:12px}
+.ans code{background:#8c642018;padding:1px 6px;border-radius:6px;font:13px "JetBrains Mono",monospace}
+.ans a{color:#9a6a1c}.ans blockquote{margin:.5em 0;padding-left:12px;border-left:2px solid var(--a);color:var(--mu)}
+.code{margin:.8em 0;border:1px solid var(--ln);border-radius:12px;overflow:hidden;background:#fffaf5}
+.code>div{display:flex;justify-content:space-between;padding:4px 12px;background:#8c64201a;color:var(--mu);font-size:12px}
 .code pre{margin:0;padding:12px;overflow:auto}.ans .code code{background:none;padding:0;font-size:13px;line-height:1.6}
-.cur{display:inline-block;width:8px;height:8px;margin-left:4px;border-radius:50%;background:var(--g);box-shadow:0 0 10px var(--g);animation:bl 1s infinite}
+.cur{display:inline-block;width:8px;height:8px;margin-left:4px;border-radius:50%;background:var(--a);box-shadow:0 0 10px var(--a);animation:bl 1s infinite}
 @keyframes bl{50%{opacity:.2}}
 .ft{color:var(--mu);font-size:12px;margin-top:4px}.ft button{margin-left:10px;color:var(--mu)}.ft button:hover{color:var(--tx)}
-.err{color:#ff9aa8;margin-top:6px}
+.err{color:#b4412f;margin-top:6px}
 footer{padding:0 18px 18px}
 @property --r{syntax:"<angle>";inherits:false;initial-value:0deg}
-.box{position:relative;max-width:760px;margin:auto;display:flex;align-items:flex-end;gap:8px;padding:10px 10px 10px 18px;border-radius:24px;background:#0d1226ee;box-shadow:inset 0 0 0 1px var(--ln),0 10px 40px #0008}
-.box::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:2px;background:conic-gradient(from var(--r),var(--a),var(--b),var(--g),var(--a));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .6s;animation:rt 3s linear infinite;pointer-events:none}
+.box{position:relative;max-width:760px;margin:auto;display:flex;align-items:flex-end;gap:8px;padding:10px 10px 10px 18px;border-radius:24px;background:#fffaf4ee;box-shadow:inset 0 0 0 1px var(--ln),0 12px 40px #8c642026}
+.box::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:2px;background:conic-gradient(from var(--r),#b88a4a,#f3dfa8,#e3b79a,#b88a4a);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .6s;animation:rt 3s linear infinite;pointer-events:none}
 body.think .box::before{opacity:1}
 @keyframes rt{to{--r:360deg}}
-#in{flex:1;resize:none;border:0;outline:0;background:none;max-height:200px;line-height:1.6;padding:6px 0}
-#send{flex:none;width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--a),var(--b));color:#0a0d1e;font-weight:700;transition:.2s}
-#send:hover{transform:scale(1.08)}#send.stop{background:#ffffff22;color:var(--tx)}
-dialog{background:#0d1226;color:var(--tx);border:1px solid var(--ln);border-radius:18px;padding:22px;width:min(440px,92vw)}
-dialog::backdrop{background:#000a;backdrop-filter:blur(4px)}
+#in{flex:1;resize:none;border:0;outline:0;background:none;max-height:200px;line-height:1.6;padding:6px 0}#in::placeholder{color:var(--mu)}
+#send{flex:none;width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#dcb870,#b88a4a);color:#fff;font-weight:700;transition:.2s}
+#send:hover{transform:scale(1.08)}#send.stop{background:#8c642026;color:var(--tx)}
+dialog{background:#fff6ee;color:var(--tx);border:1px solid var(--ln);border-radius:18px;padding:22px;width:min(440px,92vw)}
+dialog::backdrop{background:#3b2a2066;backdrop-filter:blur(4px)}
 dialog label{display:block;margin:12px 0 4px;color:var(--mu);font-size:13px}
-dialog input,dialog textarea{width:100%;background:#ffffff0d;border:1px solid var(--ln);border-radius:10px;padding:8px 10px;outline:0}
-#ok{margin-top:16px;width:100%;padding:10px;border-radius:12px;background:linear-gradient(135deg,var(--a),var(--b));color:#0a0d1e;font-weight:700}
+dialog input,dialog textarea{width:100%;background:#ffffffaa;border:1px solid var(--ln);border-radius:10px;padding:8px 10px;outline:0}
+#ok{margin-top:16px;width:100%;padding:10px;border-radius:12px;background:linear-gradient(135deg,#dcb870,#b88a4a);color:#fff;font-weight:700}
 @media(max-width:760px){aside{position:fixed;inset:0 auto 0 0;transform:translateX(-100%)}aside.open{transform:none}#menu{display:block}}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important}}
 </style></head><body>
 <canvas id="bg"></canvas><div class="aurora"></div>
 <div id="app">
-<aside id="side"><div class="brand">🌙 Luna</div><button id="new">＋ 新しいチャット</button><div id="list"></div><button id="cfg">⚙ 設定</button></aside>
+<aside id="side"><div class="brand">☾ Luna</div><button id="new">＋ 新しいチャット</button><div id="list"></div><button id="cfg">⚙ 設定</button></aside>
 <main>
 <header><button id="menu">☰</button><select id="model"></select></header>
 <div id="scroll">
-<div id="empty"><canvas id="eo"></canvas><h1 id="gr"></h1><p>月明かりのように、静かに寄り添うAI</p>
+<div id="empty"><canvas id="eo"></canvas><h1 id="gr"></h1><p>上質な静けさで、あなたに寄り添うAI</p>
 <div class="chips"><button>今夜の空について教えて</button><button>短い詩を書いて</button><button>JavaScriptで時計を作って</button><button>アイデア出しを手伝って</button></div></div>
 <div id="msgs"></div></div>
 <footer><div class="box"><textarea id="in" rows="1" placeholder="Lunaに話しかける…"></textarea><button id="send">↑</button></div></footer>
@@ -104,23 +104,23 @@ let chats=L("luna.chats",[]),cfg={model:"@cf/meta/llama-3.3-70b-instruct-fp8-fas
 /* ===== 月のオーブ(考え中アニメーション) ===== */
 class Orb{
  constructor(c,S){const d=devicePixelRatio||1;Object.assign(this,{c,S,x:c.getContext("2d")});c.width=c.height=S*d;c.style.cssText=`width:${S}px;height:${S}px`;this.x.scale(d,d);
-  this.ps=Array.from({length:15},(_,i)=>({o:i%3,a:i*1.3,s:.5+(i%5)*.15,c:["#7fd6ff","#b3a8ff","#ffe7a3"][i%3]}));
+  this.ps=Array.from({length:15},(_,i)=>({o:i%3,a:i*1.3,s:.5+(i%5)*.15,c:["#b88a4a","#e0a98c","#d9b36c"][i%3]}));
   this.loop=t=>{if(!this.c.isConnected)return;this.draw(t/1000);requestAnimationFrame(this.loop)};requestAnimationFrame(this.loop)}
  draw(t){const{x,S}=this,C=S/2,r=S*.17,T=6.283;x.clearRect(0,0,S,S);
-  let g=x.createRadialGradient(C,C,r*.8,C,C,S*.5);g.addColorStop(0,`rgba(169,156,255,${.38+.1*Math.sin(t*2)})`);g.addColorStop(1,"rgba(169,156,255,0)");x.fillStyle=g;x.fillRect(0,0,S,S);
-  for(let i=0;i<3;i++){const p=(t/3+i/3)%1;x.strokeStyle=`rgba(180,200,255,${.3*(1-p)})`;x.lineWidth=1;x.beginPath();x.arc(C,C,r*1.2+p*S*.3,0,T);x.stroke()}
+  let g=x.createRadialGradient(C,C,r*.8,C,C,S*.5);g.addColorStop(0,`rgba(217,179,108,${.45+.1*Math.sin(t*2)})`);g.addColorStop(1,"rgba(217,179,108,0)");x.fillStyle=g;x.fillRect(0,0,S,S);
+  for(let i=0;i<3;i++){const p=(t/3+i/3)%1;x.strokeStyle=`rgba(184,138,74,${.4*(1-p)})`;x.lineWidth=1;x.beginPath();x.arc(C,C,r*1.2+p*S*.3,0,T);x.stroke()}
   const orbit=front=>this.ps.forEach(p=>{const th=p.a+t*p.s,rx=S*(.3+.05*p.o),ry=rx*.32,tl=[-.5,.35,1.1][p.o];
    for(let k=0;k<12;k++){const a=th-k*.09;if((Math.sin(a)>0)!=front)continue;const ex=rx*Math.cos(a),ey=ry*Math.sin(a);
     x.globalAlpha=(1-k/12)*.9;x.fillStyle=p.c;x.beginPath();x.arc(C+ex*Math.cos(tl)-ey*Math.sin(tl),C+ex*Math.sin(tl)+ey*Math.cos(tl),(2.8-k*.18)*S/100,0,T);x.fill()}x.globalAlpha=1});
   orbit(false);
   const ph=(t/7)%1,k=Math.cos(ph*T);x.save();x.translate(C,C);
-  x.shadowColor="rgba(255,236,190,.7)";x.shadowBlur=r*.9;x.fillStyle="#1b2142";x.beginPath();x.arc(0,0,r,0,T);x.fill();x.shadowBlur=0;
+  x.shadowColor="rgba(214,170,100,.7)";x.shadowBlur=r*.9;x.fillStyle="#e6cdb8";x.beginPath();x.arc(0,0,r,0,T);x.fill();x.shadowBlur=0;
   if(ph>=.5)x.scale(-1,1);
   x.beginPath();x.arc(0,0,r,-1.5708,1.5708);x.ellipse(0,0,Math.max(.01,Math.abs(r*k)),r,0,1.5708,-1.5708,k>0);
-  g=x.createRadialGradient(-r*.3,-r*.3,r*.1,0,0,r);g.addColorStop(0,"#fffaf0");g.addColorStop(1,"#d9cfb8");x.fillStyle=g;x.fill();x.restore();
+  g=x.createRadialGradient(-r*.3,-r*.3,r*.1,0,0,r);g.addColorStop(0,"#fffdf8");g.addColorStop(1,"#e6c487");x.fillStyle=g;x.fill();x.restore();
   orbit(true)}
 }
-const P=["月明かりの下で考えています","言葉を紡いでいます","星々をたどっています","静かに思索しています"];
+const P=["丁寧に考えています","言葉を選んでいます","最良の答えを磨いています","静かに推敲しています"];
 function think(th){const lab=th.querySelector("b"),tm=th.querySelector("small"),a=performance.now();new Orb(th.querySelector("canvas"),112);
  const iv=setInterval(()=>{if(!th.isConnected)return clearInterval(iv);const s=performance.now()-a,n=Math.floor(s/2800)%P.length;if(lab.dataset.i!=n){lab.dataset.i=n;lab.textContent=P[n]}tm.textContent=(s/1000).toFixed(1)+"s"},100)}
 
@@ -128,8 +128,8 @@ function think(th){const lab=th.querySelector("b"),tm=th.querySelector("small"),
 (()=>{const c=$("#bg"),x=c.getContext("2d");let W,H,st=[],k=1,off=0;
  const rs=()=>{const d=devicePixelRatio||1;W=c.width=innerWidth*d;H=c.height=innerHeight*d;st=Array.from({length:Math.round(innerWidth*innerHeight/6500)},()=>({x:Math.random()*W,y:Math.random()*H,r:(Math.random()*1.2+.3)*d,p:Math.random()*6.28,s:Math.random()*.8+.3}))};
  rs();addEventListener("resize",rs);
- const f=t=>{t/=1000;k+=((busy?3.5:1)-k)*.03;off+=k*.08;x.clearRect(0,0,W,H);x.fillStyle="#dfe6ff";
-  for(const s of st){x.globalAlpha=.2+.6*Math.abs(Math.sin(s.p+t*s.s*k));x.beginPath();x.arc(s.x,(s.y+off*s.s)%H,s.r,0,6.283);x.fill()}requestAnimationFrame(f)};requestAnimationFrame(f)})();
+ const f=t=>{t/=1000;k+=((busy?3.5:1)-k)*.03;off+=k*.08;x.clearRect(0,0,W,H);x.fillStyle="#c9a063";
+  for(const s of st){x.globalAlpha=.12+.4*Math.abs(Math.sin(s.p+t*s.s*k));x.beginPath();x.arc(s.x,(s.y+off*s.s)%H,s.r,0,6.283);x.fill()}requestAnimationFrame(f)};requestAnimationFrame(f)})();
 
 /* ===== Markdown ===== */
 const inl=t=>E(t).replace(/`([^`]+)`/g,"<code>$1</code>").replace(/\*\*([^*]+)\*\*/g,"<b>$1</b>").replace(/\*([^*\s][^*]*)\*/g,"<i>$1</i>").replace(/\[([^\]]+)\]\((https?:[^\s)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
@@ -210,7 +210,7 @@ $("#ok").onclick=()=>{cfg.system=$("#c_sys").value;cfg.temp=+$("#c_t").value;cfg
  S("luna.cfg",cfg);$("#dlg").close()};
 
 /* ===== 起動 ===== */
-const h=new Date().getHours();$("#gr").textContent=(h<5?"こんばんは":h<11?"おはようございます":h<18?"こんにちは":"こんばんは")+"。何を照らしましょうか？";
+const h=new Date().getHours();$("#gr").textContent=(h<5?"こんばんは":h<11?"おはようございます":h<18?"こんにちは":"こんばんは")+"。ご用件をお聞かせください。";
 new Orb($("#eo"),170);
 fetch("/api/models").then(r=>r.json()).then(d=>{d.models.forEach(m=>addModel(m.id,`${m.name} — ${m.tag}`))}).catch(()=>{}).finally(()=>{
  if(![...$("#model").options].some(o=>o.value==cfg.model))addModel(cfg.model,cfg.model);$("#model").value=cfg.model});
