@@ -5,131 +5,100 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='26'%3E🌙%3C/text%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#ffe7cf;--lt:#fff5eb;--tx:#3b2a20;--mu:#8a7060;--ln:#7a4e2a26;--a:#b88a4a;--b:#e3b79a;--g:#8c6420;--gl:#ffffff8c}
+:root{--bg:#0a0b11;--pn:#1d2136;--bd:#2e3250;--tx:#e6e8f0;--mu:#7d86a3;--dot:#6f7a99;--ln:#ffffff14}
 *{box-sizing:border-box}html,body{height:100%;margin:0}
-body{background:radial-gradient(110% 80% at 50% -10%,var(--lt),var(--bg) 60%,#edceb3);color:var(--tx);font:15px/1.85 "Zen Kaku Gothic New",system-ui,sans-serif;overflow:hidden}
-button,select,textarea,input{font:inherit;color:inherit}button{cursor:pointer;background:none;border:0}
-#bg,.aurora{position:fixed;inset:0;pointer-events:none}
-.aurora{filter:blur(90px);opacity:.45;transition:opacity 1.6s;overflow:hidden}
-.aurora::before,.aurora::after{content:"";position:absolute;width:55vw;height:55vw;border-radius:50%;animation:dr 22s ease-in-out infinite alternate}
-.aurora::before{left:-12vw;top:-14vw;background:#fff4e8}
-.aurora::after{right:-14vw;bottom:-18vw;background:#f0c08a;animation-delay:-11s}
-body.think .aurora{opacity:.9}
-@keyframes dr{to{transform:translate(14vw,9vw) scale(1.25)}}
-#app{position:relative;display:flex;height:100%}
-aside{width:270px;flex:none;display:flex;flex-direction:column;gap:10px;padding:18px 14px;background:#fff7f0a6;backdrop-filter:blur(20px);border-right:1px solid var(--ln);z-index:5;transition:transform .3s}
-.brand{font:600 28px "Shippori Mincho",serif;letter-spacing:.16em;background:linear-gradient(90deg,#8c6420,#dcb870,#8c6420);-webkit-background-clip:text;background-clip:text;color:transparent;padding:2px 8px}
-#new,#cfg{padding:10px;border-radius:12px;border:1px solid var(--ln);background:var(--gl);transition:.2s}
-#new:hover,#cfg:hover,.ci:hover{background:#ffffffc0}
+body{background-color:var(--bg);background-image:linear-gradient(#23263d 1px,transparent 1px),linear-gradient(90deg,#23263d 1px,transparent 1px);background-size:96px 96px;color:var(--tx);font:15px/1.8 "Zen Kaku Gothic New",system-ui,sans-serif;overflow:hidden}
+button,select,textarea,input{font:inherit;color:inherit}button{cursor:pointer;background:none;border:0;display:inline-flex;align-items:center;gap:6px}
+svg.lucide{width:18px;height:18px;stroke-width:1.8;flex:none}
+#app{display:flex;height:100%}
+aside{width:260px;flex:none;display:flex;flex-direction:column;gap:10px;padding:16px 12px;background:#0a0b11ee;border-right:1px solid var(--ln);z-index:5;transition:transform .3s}
+.brand{display:flex;align-items:center;gap:8px;font-weight:700;font-size:20px;letter-spacing:.06em;padding:2px 8px}
+#new,#cfg{justify-content:center;padding:10px;border-radius:12px;border:1px solid var(--bd);background:var(--pn);transition:.2s}
+#new:hover,#cfg:hover{border-color:var(--dot)}
 #list{flex:1;overflow:auto;display:flex;flex-direction:column;gap:2px}
-.ci{display:flex;justify-content:space-between;gap:6px;padding:8px 10px;border-radius:10px;cursor:pointer;color:var(--mu);font-size:13.5px;line-height:1.5}
-.ci span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ci.on{background:#b88a4a22;color:var(--tx)}
+.ci{display:flex;justify-content:space-between;align-items:center;gap:6px;padding:8px 10px;border-radius:10px;cursor:pointer;color:var(--mu);font-size:13.5px;line-height:1.5}
+.ci:hover{background:#ffffff0d}.ci.on{background:var(--pn);color:var(--tx)}
+.ci span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ci button{opacity:0;color:var(--mu)}.ci:hover button{opacity:1}
 main{flex:1;min-width:0;display:flex;flex-direction:column}
 header{display:flex;align-items:center;gap:8px;padding:12px 18px}
-#menu{display:none;font-size:20px}
-#model{background:var(--gl);border:1px solid var(--ln);border-radius:999px;padding:7px 14px;max-width:100%;outline:0}
-#model option{background:#fff3e8}
+#menu{display:none}
+#model{background:var(--pn);border:1px solid var(--bd);border-radius:999px;padding:7px 14px;max-width:100%;outline:0}
+#model option{background:#10142b}
 #scroll{flex:1;overflow:auto;padding:10px 18px 30px}
-#empty{max-width:760px;margin:4vh auto 0;text-align:center}
-#empty h1{font:500 30px "Shippori Mincho",serif;margin:0 0 4px;letter-spacing:.06em}#empty p{color:var(--mu);margin:0 0 22px}
+#empty{max-width:760px;margin:12vh auto 0;text-align:center}
+#empty h1{font-size:26px;font-weight:700;margin:0 0 4px}#empty p{color:var(--mu);margin:0 0 22px}
 .chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
-.chips button{padding:10px 16px;border-radius:14px;border:1px solid var(--ln);background:var(--gl);transition:.25s}
-.chips button:hover{transform:translateY(-3px);border-color:var(--a);box-shadow:0 8px 30px #b88a4a33}
-.m{display:flex;gap:12px;margin:22px auto;max-width:760px;animation:up .5s both}
-@keyframes up{from{opacity:0;transform:translateY(10px)}}
+.chips button{padding:10px 16px;border-radius:14px;border:1px solid var(--bd);background:var(--pn);transition:.2s}
+.chips button:hover{border-color:var(--dot);transform:translateY(-2px)}
+.m{display:flex;gap:12px;margin:22px auto;max-width:760px;animation:up .4s both}
+@keyframes up{from{opacity:0;transform:translateY(8px)}}
 .m.user{justify-content:flex-end}
-.u{background:linear-gradient(135deg,#fffaf4,#fbe3cf);border:1px solid #b88a4a33;box-shadow:0 4px 16px #8c642018;padding:9px 16px;border-radius:18px 18px 4px 18px;max-width:85%;overflow-wrap:anywhere}
-.av{flex:none;width:30px;height:30px;margin-top:4px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fffdf8,#e6c487 75%);box-shadow:0 0 16px #c9a06355}
-body.think .m:last-child .av{animation:pl 1.8s ease-in-out infinite}
-@keyframes pl{50%{box-shadow:0 0 30px #d9b36ccc,0 0 60px #f0c08a99}}
+.u{background:var(--pn);border:1px solid var(--bd);padding:9px 16px;border-radius:22px 22px 6px 22px;max-width:85%;overflow-wrap:anywhere}
+.av{flex:none;width:30px;height:30px;margin-top:4px;border-radius:50%;background:var(--pn);border:1px solid var(--bd);display:grid;place-items:center;color:var(--dot)}
+.av svg{width:16px;height:16px}
 .bd{flex:1;min-width:0}
-.th{display:flex;align-items:center;gap:2px;max-height:130px;transition:.5s}
-.th.out{opacity:0;transform:scale(.85);max-height:0;overflow:hidden}
-.th small{display:block;color:var(--mu);font-size:12px}
-.sh{background:linear-gradient(90deg,#8a7060 20%,#d4a24f 50%,#8a7060 80%);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:sh 2.4s linear infinite;letter-spacing:.08em}
-@keyframes sh{to{background-position:-200% 0}}
-.rs{margin:4px 0 10px;border:1px solid var(--ln);border-radius:12px;padding:6px 12px;color:var(--mu);font-size:13px;background:#ffffff66}
+.th{transition:.4s;max-height:80px}.th.out{opacity:0;transform:scale(.9);max-height:0;overflow:hidden}
+.typing{--d:1.2s;display:inline-flex;gap:9px;padding:15px 20px;background:linear-gradient(#222640,#1b1f35);border:1px solid var(--bd);border-radius:22px 22px 22px 6px}
+.typing i{width:9px;height:9px;border-radius:50%;background:var(--dot);animation:dt var(--d) ease-in-out infinite;animation-delay:calc(var(--d)/3*var(--n))}
+.typing i:nth-child(1){--n:0}.typing i:nth-child(2){--n:1}.typing i:nth-child(3){--n:2}
+@keyframes dt{0%,60%,100%{transform:translateY(0);opacity:.55}30%{transform:translateY(-7px);opacity:1}}
+.rs{margin:4px 0 10px;border:1px solid var(--bd);border-radius:12px;padding:6px 12px;color:var(--mu);font-size:13px;background:#ffffff08}
 .rs summary{cursor:pointer}.rs div{white-space:pre-wrap;max-height:200px;overflow:auto;margin-top:6px}
-.ans{overflow-wrap:anywhere}.ans p{margin:.5em 0}.ans h2,.ans h3,.ans h4,.ans h5{font-family:"Shippori Mincho",serif;margin:1em 0 .3em}
-.ans code{background:#8c642018;padding:1px 6px;border-radius:6px;font:13px "JetBrains Mono",monospace}
-.ans a{color:#9a6a1c}.ans blockquote{margin:.5em 0;padding-left:12px;border-left:2px solid var(--a);color:var(--mu)}
-.code{margin:.8em 0;border:1px solid var(--ln);border-radius:12px;overflow:hidden;background:#fffaf5}
-.code>div{display:flex;justify-content:space-between;padding:4px 12px;background:#8c64201a;color:var(--mu);font-size:12px}
+.ans{overflow-wrap:anywhere}.ans p{margin:.5em 0}.ans h2,.ans h3,.ans h4,.ans h5{margin:1em 0 .3em}
+.ans code{background:#ffffff14;padding:1px 6px;border-radius:6px;font:13px "JetBrains Mono",monospace}
+.ans a{color:#9fb0ff}.ans blockquote{margin:.5em 0;padding-left:12px;border-left:2px solid var(--dot);color:var(--mu)}
+.code{margin:.8em 0;border:1px solid var(--bd);border-radius:12px;overflow:hidden;background:#06070c}
+.code>div{display:flex;justify-content:space-between;align-items:center;padding:4px 12px;background:#ffffff0c;color:var(--mu);font-size:12px}
 .code pre{margin:0;padding:12px;overflow:auto}.ans .code code{background:none;padding:0;font-size:13px;line-height:1.6}
-.cur{display:inline-block;width:8px;height:8px;margin-left:4px;border-radius:50%;background:var(--a);box-shadow:0 0 10px var(--a);animation:bl 1s infinite}
+.cur{display:inline-block;width:8px;height:8px;margin-left:4px;border-radius:50%;background:var(--dot);animation:bl 1s infinite}
 @keyframes bl{50%{opacity:.2}}
-.ft{color:var(--mu);font-size:12px;margin-top:4px}.ft button{margin-left:10px;color:var(--mu)}.ft button:hover{color:var(--tx)}
-.err{color:#b4412f;margin-top:6px}
+.ft{display:flex;align-items:center;gap:10px;color:var(--mu);font-size:12px;margin-top:4px}.ft button{color:var(--mu)}.ft button:hover{color:var(--tx)}
+.ft svg,.code svg{width:15px;height:15px}
+button:not(.done)>.c2,.done>.c1{display:none}.done{color:#8fd6a8!important}
+.err{color:#ff9aa8;margin-top:6px}
 footer{padding:0 18px 18px}
-@property --r{syntax:"<angle>";inherits:false;initial-value:0deg}
-.box{position:relative;max-width:760px;margin:auto;display:flex;align-items:flex-end;gap:8px;padding:10px 10px 10px 18px;border-radius:24px;background:#fffaf4ee;box-shadow:inset 0 0 0 1px var(--ln),0 12px 40px #8c642026}
-.box::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:2px;background:conic-gradient(from var(--r),#b88a4a,#f3dfa8,#e3b79a,#b88a4a);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .6s;animation:rt 3s linear infinite;pointer-events:none}
-body.think .box::before{opacity:1}
-@keyframes rt{to{--r:360deg}}
+.box{max-width:760px;margin:auto;display:flex;align-items:flex-end;gap:8px;padding:10px 10px 10px 18px;border-radius:24px;background:var(--pn);border:1px solid var(--bd)}
+.box:focus-within{border-color:var(--dot)}
 #in{flex:1;resize:none;border:0;outline:0;background:none;max-height:200px;line-height:1.6;padding:6px 0}#in::placeholder{color:var(--mu)}
-#send{flex:none;width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#dcb870,#b88a4a);color:#fff;font-weight:700;transition:.2s}
-#send:hover{transform:scale(1.08)}#send.stop{background:#8c642026;color:var(--tx)}
-dialog{background:#fff6ee;color:var(--tx);border:1px solid var(--ln);border-radius:18px;padding:22px;width:min(440px,92vw)}
-dialog::backdrop{background:#3b2a2066;backdrop-filter:blur(4px)}
+#send{flex:none;width:38px;height:38px;border-radius:50%;background:var(--tx);color:var(--bg);justify-content:center}
+#send.stop .i-send,#send:not(.stop) .i-stop{display:none}
+dialog{background:#12152a;color:var(--tx);border:1px solid var(--bd);border-radius:18px;padding:22px;width:min(440px,92vw);max-height:90dvh;overflow:auto}
+dialog::backdrop{background:#000a}
+.dh{display:flex;justify-content:space-between;align-items:center;font-size:18px;font-weight:700}
+#x{color:var(--mu);padding:4px;border-radius:8px}#x:hover{background:#ffffff14}
 dialog label{display:block;margin:12px 0 4px;color:var(--mu);font-size:13px}
-dialog input,dialog textarea{width:100%;background:#ffffffaa;border:1px solid var(--ln);border-radius:10px;padding:8px 10px;outline:0}
-#ok{margin-top:16px;width:100%;padding:10px;border-radius:12px;background:linear-gradient(135deg,#dcb870,#b88a4a);color:#fff;font-weight:700}
-@media(max-width:760px){aside{position:fixed;inset:0 auto 0 0;transform:translateX(-100%)}aside.open{transform:none}#menu{display:block}}
+dialog input,dialog textarea{width:100%;background:#ffffff0d;border:1px solid var(--bd);border-radius:10px;padding:8px 10px;outline:0}
+#ok{margin-top:16px;width:100%;justify-content:center;padding:10px;border-radius:12px;background:var(--tx);color:var(--bg);font-weight:700}
+@media(max-width:760px){aside{position:fixed;inset:0 auto 0 0;transform:translateX(-100%)}aside.open{transform:none}#menu{display:inline-flex}}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important}}
 </style></head><body>
-<canvas id="bg"></canvas><div class="aurora"></div>
+
 <div id="app">
-<aside id="side"><div class="brand">☾ Luna</div><button id="new">＋ 新しいチャット</button><div id="list"></div><button id="cfg">⚙ 設定</button></aside>
+<aside id="side"><div class="brand"><i data-lucide="moon"></i>Luna</div><button id="new"><i data-lucide="plus"></i>新しいチャット</button><div id="list"></div><button id="cfg"><i data-lucide="settings"></i>設定</button></aside>
 <main>
-<header><button id="menu">☰</button><select id="model"></select></header>
+<header><button id="menu"><i data-lucide="menu"></i></button><select id="model"></select></header>
 <div id="scroll">
-<div id="empty"><canvas id="eo"></canvas><h1 id="gr"></h1><p>上質な静けさで、あなたに寄り添うAI</p>
+<div id="empty"><h1 id="gr"></h1><p>Workers AI のモデルとチャット</p>
 <div class="chips"><button>今夜の空について教えて</button><button>短い詩を書いて</button><button>JavaScriptで時計を作って</button><button>アイデア出しを手伝って</button></div></div>
 <div id="msgs"></div></div>
-<footer><div class="box"><textarea id="in" rows="1" placeholder="Lunaに話しかける…"></textarea><button id="send">↑</button></div></footer>
+<footer><div class="box"><textarea id="in" rows="1" placeholder="Lunaに話しかける…"></textarea><button id="send"><i data-lucide="arrow-up" class="i-send"></i><i data-lucide="square" class="i-stop"></i></button></div></footer>
 </main></div>
-<dialog id="dlg"><b style="font:700 18px 'Shippori Mincho',serif">設定</b>
+<dialog id="dlg"><div class="dh"><b>設定</b><button id="x" type="button" aria-label="閉じる"><i data-lucide="x"></i></button></div>
 <label>システムプロンプト</label><textarea id="c_sys" rows="3" placeholder="例: あなたは親切なアシスタントです"></textarea>
 <label>Temperature <span id="c_tv"></span></label><input id="c_t" type="range" min="0" max="1.5" step=".1">
 <label>最大トークン数</label><input id="c_max" type="number" min="128" max="16384" step="128">
 <label>モデルID直接指定(任意) 例: @cf/...</label><input id="c_mid">
 <label>アクセスキー(Worker側でACCESS_KEYを設定した場合)</label><input id="c_key" type="password">
 <button id="ok">保存</button></dialog>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
 <script>
 const $=s=>document.querySelector(s),E=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const L=(k,d)=>{try{return JSON.parse(localStorage[k])??d}catch{return d}},S=(k,v)=>{try{localStorage[k]=JSON.stringify(v)}catch{}};
 let chats=L("luna.chats",[]),cfg={model:"@cf/meta/llama-3.3-70b-instruct-fp8-fast",system:"",temp:.7,max:2048,key:"",...L("luna.cfg",{})},cur=null,busy=false,ctl=null;
 
-/* ===== 月のオーブ(考え中アニメーション) ===== */
-class Orb{
- constructor(c,S){const d=devicePixelRatio||1;Object.assign(this,{c,S,x:c.getContext("2d")});c.width=c.height=S*d;c.style.cssText=`width:${S}px;height:${S}px`;this.x.scale(d,d);
-  this.ps=Array.from({length:15},(_,i)=>({o:i%3,a:i*1.3,s:.5+(i%5)*.15,c:["#b88a4a","#e0a98c","#d9b36c"][i%3]}));
-  this.loop=t=>{if(!this.c.isConnected)return;this.draw(t/1000);requestAnimationFrame(this.loop)};requestAnimationFrame(this.loop)}
- draw(t){const{x,S}=this,C=S/2,r=S*.17,T=6.283;x.clearRect(0,0,S,S);
-  let g=x.createRadialGradient(C,C,r*.8,C,C,S*.5);g.addColorStop(0,`rgba(217,179,108,${.45+.1*Math.sin(t*2)})`);g.addColorStop(1,"rgba(217,179,108,0)");x.fillStyle=g;x.fillRect(0,0,S,S);
-  for(let i=0;i<3;i++){const p=(t/3+i/3)%1;x.strokeStyle=`rgba(184,138,74,${.4*(1-p)})`;x.lineWidth=1;x.beginPath();x.arc(C,C,r*1.2+p*S*.3,0,T);x.stroke()}
-  const orbit=front=>this.ps.forEach(p=>{const th=p.a+t*p.s,rx=S*(.3+.05*p.o),ry=rx*.32,tl=[-.5,.35,1.1][p.o];
-   for(let k=0;k<12;k++){const a=th-k*.09;if((Math.sin(a)>0)!=front)continue;const ex=rx*Math.cos(a),ey=ry*Math.sin(a);
-    x.globalAlpha=(1-k/12)*.9;x.fillStyle=p.c;x.beginPath();x.arc(C+ex*Math.cos(tl)-ey*Math.sin(tl),C+ex*Math.sin(tl)+ey*Math.cos(tl),(2.8-k*.18)*S/100,0,T);x.fill()}x.globalAlpha=1});
-  orbit(false);
-  const ph=(t/7)%1,k=Math.cos(ph*T);x.save();x.translate(C,C);
-  x.shadowColor="rgba(214,170,100,.7)";x.shadowBlur=r*.9;x.fillStyle="#e6cdb8";x.beginPath();x.arc(0,0,r,0,T);x.fill();x.shadowBlur=0;
-  if(ph>=.5)x.scale(-1,1);
-  x.beginPath();x.arc(0,0,r,-1.5708,1.5708);x.ellipse(0,0,Math.max(.01,Math.abs(r*k)),r,0,1.5708,-1.5708,k>0);
-  g=x.createRadialGradient(-r*.3,-r*.3,r*.1,0,0,r);g.addColorStop(0,"#fffdf8");g.addColorStop(1,"#e6c487");x.fillStyle=g;x.fill();x.restore();
-  orbit(true)}
-}
-const P=["丁寧に考えています","言葉を選んでいます","最良の答えを磨いています","静かに推敲しています"];
-function think(th){const lab=th.querySelector("b"),tm=th.querySelector("small"),a=performance.now();new Orb(th.querySelector("canvas"),112);
- const iv=setInterval(()=>{if(!th.isConnected)return clearInterval(iv);const s=performance.now()-a,n=Math.floor(s/2800)%P.length;if(lab.dataset.i!=n){lab.dataset.i=n;lab.textContent=P[n]}tm.textContent=(s/1000).toFixed(1)+"s"},100)}
-
-/* ===== 背景の星空(考え中は瞬きが速くなる) ===== */
-(()=>{const c=$("#bg"),x=c.getContext("2d");let W,H,st=[],k=1,off=0;
- const rs=()=>{const d=devicePixelRatio||1;W=c.width=innerWidth*d;H=c.height=innerHeight*d;st=Array.from({length:Math.round(innerWidth*innerHeight/6500)},()=>({x:Math.random()*W,y:Math.random()*H,r:(Math.random()*1.2+.3)*d,p:Math.random()*6.28,s:Math.random()*.8+.3}))};
- rs();addEventListener("resize",rs);
- const f=t=>{t/=1000;k+=((busy?3.5:1)-k)*.03;off+=k*.08;x.clearRect(0,0,W,H);x.fillStyle="#c9a063";
-  for(const s of st){x.globalAlpha=.12+.4*Math.abs(Math.sin(s.p+t*s.s*k));x.beginPath();x.arc(s.x,(s.y+off*s.s)%H,s.r,0,6.283);x.fill()}requestAnimationFrame(f)};requestAnimationFrame(f)})();
+const CP='<i data-lucide="copy" class="c1"></i><i data-lucide="check" class="c2"></i>';
+const ic=()=>window.lucide&&lucide.createIcons();
 
 /* ===== Markdown ===== */
 const inl=t=>E(t).replace(/`([^`]+)`/g,"<code>$1</code>").replace(/\*\*([^*]+)\*\*/g,"<b>$1</b>").replace(/\*([^*\s][^*]*)\*/g,"<i>$1</i>").replace(/\[([^\]]+)\]\((https?:[^\s)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
@@ -143,7 +112,7 @@ function blk(p){let h="",l=null,pa=[];const fl=()=>{if(pa.length)h+="<p>"+pa.joi
   else{cl();pa.push(inl(x))}}
  fl();cl();return h}
 const md=s=>s.split("```").map((p,i)=>{if(!(i%2))return blk(p);const n=p.indexOf("\n"),lang=n<0?p:p.slice(0,n).trim();
- return `<div class="code"><div><span>${E(lang)}</span><button data-cp>コピー</button></div><pre><code>${E(n<0?"":p.slice(n+1).replace(/\n$/,""))}</code></pre></div>`}).join("");
+ return `<div class="code"><div><span>${E(lang)}</span><button data-cp title="コピー">${CP}</button></div><pre><code>${E(n<0?"":p.slice(n+1).replace(/\n$/,""))}</code></pre></div>`}).join("");
 const split=raw=>{const m=raw.match(/^\s*<think>([\s\S]*?)(<\/think>|$)/);return m?{t:m[1].trim(),a:raw.slice(m[0].length).trim()}:{t:"",a:raw}};
 
 /* ===== 描画 ===== */
@@ -152,14 +121,14 @@ function draw(e,m,live){
  if(th&&(m.content||!live)&&!th.classList.contains("out")){th.classList.add("out");setTimeout(()=>th.remove(),500)}
  if(m.think){rs.hidden=false;rs.querySelector("div").textContent=m.think;if(live&&!m.content)rs.open=true;else if(live&&!rs.dataset.c){rs.open=false;rs.dataset.c=1}}
  an.innerHTML=md(m.content)+(live&&m.content?'<i class="cur"></i>':"")+(m.err?`<div class="err">⚠ ${E(m.err)}</div>`:"");
- ft.innerHTML=live?"":`${E((m.model||"").split("/").pop())}${m.ms?" · "+(m.ms/1000).toFixed(1)+"秒":""}<button data-cm>コピー</button>${e._last?"<button data-re>再生成</button>":""}`}
+ ft.innerHTML=live?"":`${E((m.model||"").split("/").pop())}${m.ms?" · "+(m.ms/1000).toFixed(1)+"秒":""}<button data-cm title="コピー">${CP}</button>${e._last?'<button data-re title="再生成"><i data-lucide="refresh-cw"></i></button>':""}`;ic()}
 function msgEl(m,live,last){const e=document.createElement("div");e.className="m "+m.role;
  if(m.role=="user"){e.innerHTML=`<div class="u">${E(m.content).replace(/\n/g,"<br>")}</div>`;return e}
- e.innerHTML=`<div class="av"></div><div class="bd">${live?'<div class="th"><canvas></canvas><div><b class="sh"></b><small></small></div></div>':""}<details class="rs" hidden><summary>思考のしずく</summary><div></div></details><div class="ans"></div><div class="ft"></div></div>`;
- e._m=m;e._last=last;if(live)think(e.querySelector(".th"));draw(e,m,live);return e}
+ e.innerHTML=`<div class="av"><i data-lucide="moon"></i></div><div class="bd">${live?'<div class="th"><div class="typing"><i></i><i></i><i></i></div></div>':""}<details class="rs" hidden><summary>思考のしずく</summary><div></div></details><div class="ans"></div><div class="ft"></div></div>`;
+ e._m=m;e._last=last;draw(e,m,live);return e}
 function paint(){const box=$("#msgs"),ms=cur?.msgs||[];box.innerHTML="";ms.forEach((m,i)=>box.append(msgEl(m,busy&&i==ms.length-1&&m.role=="assistant",i==ms.length-1)));$("#scroll").scrollTop=1e9}
-function ui(){$("#list").innerHTML=chats.map(c=>`<div class="ci${c==cur?" on":""}" data-id="${c.id}"><span>${E(c.title)}</span><button data-del>×</button></div>`).join("");
- const s=$("#send");s.classList.toggle("stop",busy);s.textContent=busy?"■":"↑";$("#empty").hidden=!!cur?.msgs.length}
+function ui(){$("#list").innerHTML=chats.map(c=>`<div class="ci${c==cur?" on":""}" data-id="${c.id}"><span>${E(c.title)}</span><button data-del title="削除"><i data-lucide="trash-2"></i></button></div>`).join("");
+ const s=$("#send");s.classList.toggle("stop",busy);$("#empty").hidden=!!cur?.msgs.length;ic()}
 const save=()=>S("luna.chats",chats.slice(0,60));
 
 /* ===== 送信・ストリーミング ===== */
@@ -194,25 +163,25 @@ $("#in").oninput=e=>{const t=e.target;t.style.height="auto";t.style.height=t.scr
 $("#new").onclick=()=>{if(busy)return;cur=null;paint();ui();$("#side").classList.remove("open")};
 $("#menu").onclick=()=>$("#side").classList.toggle("open");
 $("#list").onclick=e=>{if(busy)return;const ci=e.target.closest(".ci");if(!ci)return;const c=chats.find(c=>c.id==ci.dataset.id);
- if(e.target.dataset.del!==undefined){chats=chats.filter(x=>x!=c);if(cur==c)cur=null;save()}else cur=c;paint();ui();$("#side").classList.remove("open")};
-$("#msgs").onclick=e=>{const b=e.target,m=b.closest(".m");
- if(b.dataset.cp!==undefined)navigator.clipboard.writeText(b.closest(".code").querySelector("code").textContent);
- else if(b.dataset.cm!==undefined)navigator.clipboard.writeText(m._m.content);
- else if(b.dataset.re!==undefined&&!busy){cur.msgs.pop();gen()}
- if(b.dataset.cp!==undefined||b.dataset.cm!==undefined){const o=b.textContent;b.textContent="✓";setTimeout(()=>b.textContent=o,1200)}};
+ if(e.target.closest("[data-del]")){chats=chats.filter(x=>x!=c);if(cur==c)cur=null;save()}else cur=c;paint();ui();$("#side").classList.remove("open")};
+$("#msgs").onclick=e=>{const b=e.target.closest("button");if(!b)return;const m=b.closest(".m");
+ if(b.dataset.cp!==undefined||b.dataset.cm!==undefined){navigator.clipboard.writeText(b.dataset.cp!==undefined?b.closest(".code").querySelector("code").textContent:m._m.content);b.classList.add("done");setTimeout(()=>b.classList.remove("done"),1200)}
+ else if(b.dataset.re!==undefined&&!busy){cur.msgs.pop();gen()}};
 document.querySelectorAll(".chips button").forEach(b=>b.onclick=()=>send(b.textContent));
 $("#model").onchange=e=>{cfg.model=e.target.value;S("luna.cfg",cfg)};
 function addModel(id,label){const o=document.createElement("option");o.value=id;o.textContent=label;$("#model").append(o)}
-function openCfg(){$("#c_sys").value=cfg.system;$("#c_t").value=cfg.temp;$("#c_tv").textContent=cfg.temp;$("#c_max").value=cfg.max;$("#c_key").value=cfg.key;$("#c_mid").value="";$("#dlg").showModal()}
+function openCfg(){$("#side").classList.remove("open");$("#c_sys").value=cfg.system;$("#c_t").value=cfg.temp;$("#c_tv").textContent=cfg.temp;$("#c_max").value=cfg.max;$("#c_key").value=cfg.key;$("#c_mid").value="";$("#dlg").showModal()}
 $("#cfg").onclick=openCfg;$("#c_t").oninput=e=>$("#c_tv").textContent=e.target.value;
-$("#ok").onclick=()=>{cfg.system=$("#c_sys").value;cfg.temp=+$("#c_t").value;cfg.max=+$("#c_max").value||2048;cfg.key=$("#c_key").value;
+$("#x").onclick=()=>$("#dlg").close();
+$("#dlg").onclick=e=>{const r=e.currentTarget.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)e.currentTarget.close()};
+$("#ok").onclick=()=>{try{cfg.system=$("#c_sys").value;cfg.temp=+$("#c_t").value;cfg.max=+$("#c_max").value||2048;cfg.key=$("#c_key").value;
  const mid=$("#c_mid").value.trim();if(mid){cfg.model=mid;if(![...$("#model").options].some(o=>o.value==mid))addModel(mid,mid);$("#model").value=mid}
- S("luna.cfg",cfg);$("#dlg").close()};
+ S("luna.cfg",cfg)}finally{$("#dlg").close()}};
 
 /* ===== 起動 ===== */
 const h=new Date().getHours();$("#gr").textContent=(h<5?"こんばんは":h<11?"おはようございます":h<18?"こんにちは":"こんばんは")+"。ご用件をお聞かせください。";
-new Orb($("#eo"),170);
+
 fetch("/api/models").then(r=>r.json()).then(d=>{d.models.forEach(m=>addModel(m.id,`${m.name} — ${m.tag}`))}).catch(()=>{}).finally(()=>{
  if(![...$("#model").options].some(o=>o.value==cfg.model))addModel(cfg.model,cfg.model);$("#model").value=cfg.model});
-ui();paint();
+ui();paint();ic();
 </script></body></html>
