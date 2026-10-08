@@ -15,8 +15,7 @@ Cloudflare ダッシュボード → Workers & Pages → Create → **Import a r
 `npx wrangler secret put ACCESS_KEY` を設定すると、設定画面でキーを入れた人だけ使えます。
 
 ## AI Gateway のモデルを使う
-1. ダッシュボードで AI Gateway を作成し、`wrangler.jsonc` の `vars` に `CF_ACCOUNT_ID` と `GATEWAY_ID` を設定してデプロイ。
-2. プロバイダのキーはゲートウェイ側(BYOK)に保存するか、Unified Billing を使う。ゲートウェイの認証を有効にした場合は
-   `npx wrangler secret put CF_AIG_TOKEN` でトークンを設定。
-3. Luna の設定 → 「AI Gatewayのモデルを有効にする」で使うモデルを選ぶ(モデルIDの追加も可)。
-外部モデルは課金が発生するので、`ACCESS_KEY` の設定を強く推奨します。
+`default` ゲートウェイを使います。アカウントIDなどの設定は不要です。
+ダッシュボードの AI Gateway で、使いたいプロバイダのキーを保存(BYOK)するか Unified Billing を有効にし、
+Luna の設定 → 「AI Gatewayのモデルを有効にする」で使うモデルを選びます(モデルIDの追加も可)。
+外部モデルは課金が発生するので、`npx wrangler secret put ACCESS_KEY` でアクセスキーを設定することを強く推奨します。

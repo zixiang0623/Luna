@@ -213,7 +213,7 @@ $("#ml").onclick=e=>{const b=e.target.closest(".mi");if(!b)return;cfg.model=b.da
 $("#mpx").onclick=()=>$("#mp").close();
 $("#mp").onclick=e=>{const r=e.currentTarget.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)e.currentTarget.close()};
 function openCfg(){$("#side").classList.remove("open");$("#c_art").checked=cfg.art!==false;$("#c_sys").value=cfg.system;$("#c_t").value=cfg.temp;$("#c_tv").textContent=cfg.temp;$("#c_max").value=cfg.max;$("#c_key").value=cfg.key;$("#c_mid").value="";$("#c_gw").checked=!!cfg.gw;$("#c_gw").disabled=!CAT.gwOk;$("#c_gwc").value=cfg.gwCustom||"";
- $("#gwnote").textContent=CAT.gwOk?"有効にすると、モデル選択にAI Gatewayのモデルが加わります。":"WorkerにCF_ACCOUNT_IDとGATEWAY_IDが未設定のため、まだ使えません(README参照)。";
+ $("#gwnote").textContent=CAT.gwOk?"有効にすると、モデル選択にAI Gateway(defaultゲートウェイ)のモデルが加わります。":"このWorkerではAI Gatewayを使えません。";
  $("#gwl").innerHTML=CAT.gw.map(m=>`<label><input type="checkbox" value="${E(m.id)}"${(cfg.gwOn||[]).includes(m.id)?" checked":""}>${E(m.name)}<small>${E(m.id)}</small></label>`).join("");$("#dlg").showModal()}
 $("#cfg").onclick=openCfg;$("#c_t").oninput=e=>$("#c_tv").textContent=e.target.value;
 $("#x").onclick=()=>$("#dlg").close();

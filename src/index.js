@@ -13,7 +13,7 @@ const M = [
   ["@cf/meta/llama-3.1-8b-instruct-fast", "Llama 3.1 8B Fast", "高速"],
   ["@cf/meta/llama-3.2-3b-instruct", "Llama 3.2 3B", "超軽量"],
 ];
-// AI Gateway (Unified API) のモデル。CF_ACCOUNT_ID と GATEWAY_ID を設定すると有効になる。IDは自由に編集可。
+// AI Gateway(default ゲートウェイ)で使えるモデル。IDは自由に編集可。
 const G = [
   ["openai/gpt-4o", "GPT-4o", "OpenAI"], ["openai/gpt-4o-mini", "GPT-4o mini", "OpenAI"],
   ["openai/gpt-4.1", "GPT-4.1", "OpenAI"], ["openai/gpt-4.1-mini", "GPT-4.1 mini", "OpenAI"],
@@ -31,7 +31,7 @@ export default {
     if (u.pathname === "/api/models")
       return J({
         models: M.map(([id, name, tag]) => ({ id, name, tag })), locked: !!env.ACCESS_KEY,
-        gateway: { available: !!(env.GATEWAY_ID && env.CF_ACCOUNT_ID), models: G.map(([id, name, tag]) => ({ id, name, tag })) },
+        gateway: { available: true, models: G.map(([id, name, tag]) => ({ id, name, tag })) },
       });
     if (u.pathname === "/api/chat" && r.method === "POST") {
       if (env.ACCESS_KEY && r.headers.get("x-luna-key") !== env.ACCESS_KEY) return J({ error: "アクセスキーが違います" }, 401);
@@ -39,17 +39,12 @@ export default {
       const { model, messages, system, temperature, max_tokens } = b;
       if (!/^(@cf\/[\w.-]+\/[\w.-]+|[\w.-]+\/[\w.:@\/-]+)$/.test(model || "") || !Array.isArray(messages) || messages.length > 200) return J({ error: "invalid request" }, 400);
       const ms = messages.slice(-60).map(m => ({ role: m.role === "assistant" ? "assistant" : "user", content: String(m.content).slice(0, 32000) }));
-      if (!model.startsWith("@cf/")) {
-        if (!(env.GATEWAY_ID && env.CF_ACCOUNT_ID)) return J({ error: "AI Gatewayが未設定です(CF_ACCOUNT_ID と GATEWAY_ID を設定してください)" }, 400);
+      if (!model.startsWith("@cf/")) { // AI Gateway の default ゲートウェイ経由(IDの設定は不要)
         const o = /^openai\/(o\d|gpt-5)/.test(model);
-        const body = { model, messages: system ? [{ role: "system", content: String(system).slice(0, 8000) }, ...ms] : ms, stream: true, [o ? "max_completion_tokens" : "max_tokens"]: Math.min(+max_tokens || 2048, 16384) };
-        if (!o) body.temperature = +temperature || 0.7;
-        const h = { "content-type": "application/json" };
-        if (env.CF_AIG_TOKEN) h["cf-aig-authorization"] = "Bearer " + env.CF_AIG_TOKEN;
+        const gp = { messages: system ? [{ role: "system", content: String(system).slice(0, 8000) }, ...ms] : ms, stream: true, [o ? "max_completion_tokens" : "max_tokens"]: Math.min(+max_tokens || 2048, 16384) };
+        if (!o) gp.temperature = +temperature || 0.7;
         try {
-          const g = await fetch(`https://gateway.ai.cloudflare.com/v1/${env.CF_ACCOUNT_ID}/${env.GATEWAY_ID}/compat/chat/completions`, { method: "POST", headers: h, body: JSON.stringify(body) });
-          if (!g.ok) return J({ error: `AI Gateway ${g.status}: ${(await g.text()).slice(0, 300)}` }, 502);
-          return new Response(g.body, { headers: { "content-type": "text/event-stream", "cache-control": "no-cache" } });
+          return new Response(await env.AI.run(model, gp, { gateway: { id: "default" } }), { headers: { "content-type": "text/event-stream", "cache-control": "no-cache" } });
         } catch (e) { return J({ error: String(e.message || e) }, 502); }
       }
       const oss = model.includes("gpt-oss");
