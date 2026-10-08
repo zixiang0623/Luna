@@ -25,8 +25,9 @@ Luna の設定 → 「AI Gatewayのモデルを有効にする」で使うモデ
 AIは出典の文章を写さず、内容を自分の言葉でまとめ、根拠にした記事を[1]のように番号で示します。出典は回答の下にリンクで表示されます。
 
 ## Web検索(β)
-🌐ボタンをオンにすると、Web全体を検索します。検索APIのキーをsecretに設定してください(どちらか一方でOK)。
+🌐ボタンをオンにすると、Web全体を検索します。使う検索サービスはsecretで選びます(上にあるものが優先)。
+- **Google検索**: `npx wrangler secret put GEMINI_API_KEY`(Google AI Studioで発行。GeminiのGoogle検索グラウンディングを使います)
 - `npx wrangler secret put TAVILY_API_KEY`
 - `npx wrangler secret put BRAVE_API_KEY`
 
-キーが無い場合はDuckDuckGoを直接読みにいきますが、ブロックされることがあり不安定です。
+どれも無い場合はDuckDuckGoを直接読みにいきますが、ブロックされることがあり不安定です。

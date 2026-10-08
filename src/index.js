@@ -45,8 +45,21 @@ async function kw(env, q, sys) {
   return q;
 }
 
-// Web検索(β): TAVILY_API_KEY または BRAVE_API_KEY があればそれを使い、無ければ DuckDuckGo(不安定)
-async function web(q, env) {
+// Web検索(β): GEMINI_API_KEY(=Google検索) > TAVILY_API_KEY > BRAVE_API_KEY > DuckDuckGo(不安定)
+async function web(q, env, q0) {
+  if (env.GEMINI_API_KEY) { // Gemini の Google検索グラウンディング。出典URLと、各出典が裏付ける文章を受け取る
+    const r = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent", {
+      method: "POST", headers: { "content-type": "application/json", "x-goog-api-key": env.GEMINI_API_KEY },
+      body: JSON.stringify({ contents: [{ role: "user", parts: [{ text: q0 + "\n\n(Google検索で調べ、事実を日本語で簡潔にまとめてください)" }] }], tools: [{ google_search: {} }] }),
+    });
+    const d = await r.json();
+    if (d.error) throw new Error(d.error.message);
+    const c = d.candidates?.[0], g = c?.groundingMetadata, text = (c?.content?.parts || []).map(x => x.text || "").join("");
+    const ch = g?.groundingChunks || [], ex = ch.map(() => []);
+    for (const sp of g?.groundingSupports || []) for (const i of sp.groundingChunkIndices || []) if (ex[i]) ex[i].push(sp.segment?.text || "");
+    const out = ch.map((x, i) => ({ title: x.web?.title || "Google検索", url: x.web?.uri, extract: (ex[i].join(" ") || (i === 0 ? text : "")).slice(0, 1200) })).filter(x => x.url).slice(0, 5);
+    return out.length || !text ? out : [{ title: "Google検索(Gemini)", url: "https://www.google.com/search?q=" + encodeURIComponent(q0), extract: text.slice(0, 1500) }];
+  }
   if (env.TAVILY_API_KEY) {
     const r = await fetch("https://api.tavily.com/search", { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + env.TAVILY_API_KEY }, body: JSON.stringify({ query: q, max_results: 5 }) });
     const d = await r.json();
@@ -124,10 +137,10 @@ export default {
       let b; try { b = await r.json(); } catch { return J({ error: "bad request" }, 400); }
       const q0 = String(b.q || "").slice(0, 500).trim();
       if (!q0) return J({ results: [] });
-      const q = await kw(env, q0, "ユーザーの質問に答えるためのWeb検索クエリを、1行・最大6語で出力。説明や記号は不要。");
+      const q = env.GEMINI_API_KEY ? q0 : await kw(env, q0, "ユーザーの質問に答えるためのWeb検索クエリを、1行・最大6語で出力。説明や記号は不要。");
       try {
-        const res = (await web(q, env)).filter(x => /^https?:\/\//.test(x.url) && x.extract);
-        return J({ query: q, results: res, error: res.length ? undefined : "Web検索の結果を取得できませんでした(検索APIキー未設定の可能性があります)" });
+        const res = (await web(q, env, q0)).filter(x => /^https?:\/\//.test(x.url) && x.extract);
+        return J({ query: q, results: res, error: res.length ? undefined : "Web検索の結果を取得できませんでした(GEMINI_API_KEY / TAVILY_API_KEY / BRAVE_API_KEY のいずれかを設定してください)" });
       } catch (e) { return J({ results: [], error: "Web検索に失敗しました: " + String(e.message || e) }); }
     }
     return env.ASSETS.fetch(r);
