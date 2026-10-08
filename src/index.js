@@ -25,7 +25,7 @@ const G = [
 ];
 const J = (o, s = 200) => new Response(JSON.stringify(o), { status: s, headers: { "content-type": "application/json" } });
 
-// Wikipedia検索(β): 上位3件の導入文を返す
+// Wikipedia検索: 上位3件の導入文を返す
 async function wiki(q, lang) {
   const u = new URL(`https://${lang}.wikipedia.org/w/api.php`);
   u.search = new URLSearchParams({ action: "query", format: "json", generator: "search", gsrsearch: q, gsrlimit: "3", prop: "extracts|info", exintro: "1", explaintext: "1", exchars: "1500", inprop: "url" });
@@ -33,6 +33,41 @@ async function wiki(q, lang) {
   const d = await r.json();
   return Object.values(d.query?.pages || {}).sort((a, b) => a.index - b.index)
     .map(p => ({ title: p.title, url: p.fullurl, extract: (p.extract || "").trim() })).filter(x => x.extract);
+}
+
+// 質問から検索キーワードを抜き出す(失敗したら質問文のまま)
+async function kw(env, q, sys) {
+  try {
+    const t = await env.AI.run("@cf/meta/llama-3.1-8b-instruct-fast", { messages: [{ role: "system", content: sys }, { role: "user", content: q }], max_tokens: 32, temperature: 0 });
+    const k = String(t.response || "").split("\n")[0].replace(/["「」`]/g, "").trim();
+    if (k && k.length < 80) return k;
+  } catch {}
+  return q;
+}
+
+// Web検索(β): TAVILY_API_KEY または BRAVE_API_KEY があればそれを使い、無ければ DuckDuckGo(不安定)
+async function web(q, env) {
+  if (env.TAVILY_API_KEY) {
+    const r = await fetch("https://api.tavily.com/search", { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + env.TAVILY_API_KEY }, body: JSON.stringify({ query: q, max_results: 5 }) });
+    const d = await r.json();
+    return (d.results || []).map(x => ({ title: x.title, url: x.url, extract: String(x.content || "").slice(0, 1200) }));
+  }
+  if (env.BRAVE_API_KEY) {
+    const r = await fetch("https://api.search.brave.com/res/v1/web/search?count=5&q=" + encodeURIComponent(q), { headers: { "x-subscription-token": env.BRAVE_API_KEY, accept: "application/json" } });
+    const d = await r.json();
+    return (d.web?.results || []).map(x => ({ title: String(x.title || "").replace(/<[^>]+>/g, ""), url: x.url, extract: String(x.description || "").replace(/<[^>]+>/g, "") }));
+  }
+  const r = await fetch("https://html.duckduckgo.com/html/?q=" + encodeURIComponent(q), { headers: { "user-agent": "Mozilla/5.0 (compatible; Luna/1.0)" } });
+  const h = await r.text(), out = [];
+  const tx = t => t.replace(/<[^>]+>/g, "").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#x27;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">").trim();
+  const re = /<a[^>]+class="result__a"[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>[\s\S]*?class="result__snippet"[^>]*>([\s\S]*?)<\/a>/g;
+  let m;
+  while ((m = re.exec(h)) && out.length < 5) {
+    let u = m[1]; const e = /uddg=([^&]+)/.exec(u);
+    if (e) u = decodeURIComponent(e[1]); else if (u.startsWith("//")) u = "https:" + u;
+    out.push({ title: tx(m[2]), url: u, extract: tx(m[3]) });
+  }
+  return out;
 }
 
 export default {
@@ -83,6 +118,17 @@ export default {
         if (!res.length) res = await wiki(q, "en");
         return J({ query: q, results: res });
       } catch (e) { return J({ results: [], error: String(e.message || e) }); }
+    }
+    if (u.pathname === "/api/websearch" && r.method === "POST") {
+      if (env.ACCESS_KEY && r.headers.get("x-luna-key") !== env.ACCESS_KEY) return J({ error: "アクセスキーが違います" }, 401);
+      let b; try { b = await r.json(); } catch { return J({ error: "bad request" }, 400); }
+      const q0 = String(b.q || "").slice(0, 500).trim();
+      if (!q0) return J({ results: [] });
+      const q = await kw(env, q0, "ユーザーの質問に答えるためのWeb検索クエリを、1行・最大6語で出力。説明や記号は不要。");
+      try {
+        const res = (await web(q, env)).filter(x => /^https?:\/\//.test(x.url) && x.extract);
+        return J({ query: q, results: res, error: res.length ? undefined : "Web検索の結果を取得できませんでした(検索APIキー未設定の可能性があります)" });
+      } catch (e) { return J({ results: [], error: "Web検索に失敗しました: " + String(e.message || e) }); }
     }
     return env.ASSETS.fetch(r);
   },
