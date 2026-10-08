@@ -107,7 +107,7 @@ let chats=L("luna.chats",[]),cfg={model:"@cf/meta/llama-3.3-70b-instruct-fp8-fas
 
 const CP='<i data-lucide="copy" class="c1"></i><i data-lucide="check" class="c2"></i>';
 const ic=()=>window.lucide&&lucide.createIcons();
-const ART="あなたは「Luna」です。HTMLで動くもの(アプリ、ゲーム、ツール、図解、グラフ、ページなど)を頼まれたら、<!doctype html>で始まる完結した単一HTMLを、```html のコードブロック1つで出力してください。CSSとJSはインラインにし、外部通信はしないでください(ライブラリが必要な場合のみ cdnjs.cloudflare.com から読み込む)。コードブロックは画面上でそのままプレビュー・実行されます。localStorageは使えません。HTMLの前後の説明は短くしてください。";
+const ART="あなたは「Luna」です。基本はテキスト(Markdown)だけで答えてください。詩、文章、物語、説明、相談、翻訳、要約、コードの解説、一般的な質問には、HTMLを使わず文章で答えます。HTMLを出力するのは、ユーザーが「アプリ」「ツール」「ゲーム」「ウェブページ」「HTML」など、動くものや画面そのものを明確に求めたときだけです。その場合のみ、<!doctype html>で始まる完結した単一HTMLを、```html のコードブロック1つで出力してください(CSSとJSはインライン、外部通信なし。ライブラリが必要な場合のみ cdnjs.cloudflare.com から読み込む。localStorageは使えません)。迷ったらHTMLにせず、テキストで答えてください。";
 
 /* ===== Markdown ===== */
 const inl=t=>E(t).replace(/`([^`]+)`/g,"<code>$1</code>").replace(/\*\*([^*]+)\*\*/g,"<b>$1</b>").replace(/\*([^*\s][^*]*)\*/g,"<i>$1</i>").replace(/\[([^\]]+)\]\((https?:[^\s)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
