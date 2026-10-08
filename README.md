@@ -19,3 +19,6 @@ Cloudflare ダッシュボード → Workers & Pages → Create → **Import a r
 ダッシュボードの AI Gateway で、使いたいプロバイダのキーを保存(BYOK)するか Unified Billing を有効にし、
 Luna の設定 → 「AI Gatewayのモデルを有効にする」で使うモデルを選びます(モデルIDの追加も可)。
 外部モデルは課金が発生するので、`npx wrangler secret put ACCESS_KEY` でアクセスキーを設定することを強く推奨します。
+
+## Web検索(β)
+入力欄の🌐ボタンをオンにすると、質問からキーワードを抜き出してWikipedia(日本語→英語)を検索し、結果を参考情報としてAIに渡します。出典は回答の下にリンクで表示されます。

@@ -25,6 +25,16 @@ const G = [
 ];
 const J = (o, s = 200) => new Response(JSON.stringify(o), { status: s, headers: { "content-type": "application/json" } });
 
+// Wikipedia検索(β): 上位3件の導入文を返す
+async function wiki(q, lang) {
+  const u = new URL(`https://${lang}.wikipedia.org/w/api.php`);
+  u.search = new URLSearchParams({ action: "query", format: "json", generator: "search", gsrsearch: q, gsrlimit: "3", prop: "extracts|info", exintro: "1", explaintext: "1", exchars: "1500", inprop: "url" });
+  const r = await fetch(u, { headers: { "user-agent": "Luna/1.0 (https://github.com/zixiang0623/Luna)" }, cf: { cacheTtl: 3600, cacheEverything: true } });
+  const d = await r.json();
+  return Object.values(d.query?.pages || {}).sort((a, b) => a.index - b.index)
+    .map(p => ({ title: p.title, url: p.fullurl, extract: (p.extract || "").trim() })).filter(x => x.extract);
+}
+
 export default {
   async fetch(r, env) {
     const u = new URL(r.url);
@@ -41,7 +51,7 @@ export default {
       const ms = messages.slice(-60).map(m => ({ role: m.role === "assistant" ? "assistant" : "user", content: String(m.content).slice(0, 32000) }));
       if (!model.startsWith("@cf/")) { // AI Gateway の default ゲートウェイ経由(IDの設定は不要)
         const o = /^openai\/(o\d|gpt-5)/.test(model);
-        const gp = { messages: system ? [{ role: "system", content: String(system).slice(0, 8000) }, ...ms] : ms, stream: true, [o ? "max_completion_tokens" : "max_tokens"]: Math.min(+max_tokens || 2048, 16384) };
+        const gp = { messages: system ? [{ role: "system", content: String(system).slice(0, 12000) }, ...ms] : ms, stream: true, [o ? "max_completion_tokens" : "max_tokens"]: Math.min(+max_tokens || 2048, 16384) };
         if (!o) gp.temperature = +temperature || 0.7;
         try {
           return new Response(await env.AI.run(model, gp, { gateway: { id: "default" } }), { headers: { "content-type": "text/event-stream", "cache-control": "no-cache" } });
@@ -50,11 +60,29 @@ export default {
       const oss = model.includes("gpt-oss");
       const p = oss
         ? { input: ms, instructions: system || undefined, reasoning: { effort: "medium" } }
-        : { messages: system ? [{ role: "system", content: String(system).slice(0, 8000) }, ...ms] : ms };
+        : { messages: system ? [{ role: "system", content: String(system).slice(0, 12000) }, ...ms] : ms };
       Object.assign(p, { stream: true, temperature: +temperature || 0.7, [oss ? "max_output_tokens" : "max_tokens"]: Math.min(+max_tokens || 2048, 16384) });
       try {
         return new Response(await env.AI.run(model, p), { headers: { "content-type": "text/event-stream", "cache-control": "no-cache" } });
       } catch (e) { return J({ error: String(e.message || e) }, 502); }
+    }
+    if (u.pathname === "/api/search" && r.method === "POST") {
+      if (env.ACCESS_KEY && r.headers.get("x-luna-key") !== env.ACCESS_KEY) return J({ error: "アクセスキーが違います" }, 401);
+      let b; try { b = await r.json(); } catch { return J({ error: "bad request" }, 400); }
+      let q = String(b.q || "").slice(0, 500).trim();
+      if (!q) return J({ results: [] });
+      try { // 質問から検索キーワードを抜き出す(失敗したら質問文のまま)
+        const t = await env.AI.run("@cf/meta/llama-3.1-8b-instruct-fast", { messages: [
+          { role: "system", content: "ユーザーの質問に答えるためのWikipedia検索キーワードを、1行・最大3語で出力。説明や記号は不要。" },
+          { role: "user", content: q }], max_tokens: 24, temperature: 0 });
+        const k = String(t.response || "").split("\n")[0].replace(/["「」`]/g, "").trim();
+        if (k && k.length < 60) q = k;
+      } catch {}
+      try {
+        let res = await wiki(q, "ja");
+        if (!res.length) res = await wiki(q, "en");
+        return J({ query: q, results: res });
+      } catch (e) { return J({ results: [], error: String(e.message || e) }); }
     }
     return env.ASSETS.fetch(r);
   },
