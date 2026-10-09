@@ -93,13 +93,24 @@ export default {
       let b; try { b = await r.json(); } catch { return J({ error: "bad request" }, 400); }
       const text = String(b.text || "").slice(0, 1500), known = (Array.isArray(b.known) ? b.known : []).slice(-50).map(x => String(x).slice(0, 80));
       try {
-        const t = await env.AI.run("@cf/meta/llama-3.1-8b-instruct-fast", { messages: [
-          { role: "system", content: "あなたはユーザーについての長期記憶を抽出する係です。ユーザーの発言から、今後の会話で役立つ『ユーザー自身についての事実』(名前、呼ばれ方、居住地、職業、趣味、好み、使っている技術、継続中のプロジェクト、目標など)だけを、1件80字以内の日本語の短文にして、JSON配列(文字列の配列)のみで出力する。一時的な話題、質問の内容、一般知識、他人の情報、パスワード・APIキー・カード番号・詳しい住所、健康・性・宗教・政治などのセンシティブな情報は含めない。該当がなければ[]。既存の記憶と重複するものは出さない。\n既存の記憶: " + JSON.stringify(known) },
-          { role: "user", content: text }], max_tokens: 200, temperature: 0 });
-        const m = String(t.response || "").match(/\[[\s\S]*\]/);
-        const arr = m ? JSON.parse(m[0]) : [];
-        return J({ add: arr.filter(x => typeof x === "string").map(x => x.trim()).filter(x => x && x.length <= 80).slice(0, 3) });
-      } catch { return J({ add: [] }); }
+        const t = await env.AI.run("@cf/meta/llama-3.3-70b-instruct-fp8-fast", { messages: [
+          { role: "system", content: `ユーザーの発言から、長期的に覚えておくべき『ユーザー自身についての事実』を抜き出し、JSONだけで返す。形式: {"facts":["..."]}
+対象: 名前や呼ばれ方、居住地、職業、趣味、好き嫌い、使っている技術やツール、継続中のプロジェクト、目標、「覚えて」と頼まれたこと。
+対象外: 質問や依頼の内容そのもの、一般知識、他人の情報、パスワード/APIキー/カード番号/詳しい住所、健康・性・宗教・政治の情報。
+各factは80字以内の短い日本語の文。該当なしなら {"facts":[]}
+例1: 発言「私は名古屋に住んでて、Cloudflare Workersで個人開発してます」→ {"facts":["名古屋在住","Cloudflare Workersで個人開発をしている"]}
+例2: 発言「Pythonでソートするコードを書いて」→ {"facts":[]}
+例3: 発言「僕のことはだるみんって呼んで」→ {"facts":["だるみんと呼ばれたい"]}
+すでに記憶済み(重複は出さない): ` + known.join(" / ") },
+          { role: "user", content: "発言: " + text }], max_tokens: 300, temperature: 0 });
+        const resp = t.response; let arr = [];
+        if (resp && typeof resp === "object") arr = Array.isArray(resp) ? resp : (resp.facts || []);
+        else for (const re of [/\{[\s\S]*\}/, /\[[\s\S]*\]/]) {
+          const m = String(resp || "").match(re); if (!m) continue;
+          try { const j = JSON.parse(m[0]); arr = Array.isArray(j) ? j : (j.facts || []); break; } catch {}
+        }
+        return J({ add: arr.filter(x => typeof x === "string").map(x => x.trim()).filter(x => x && x.length <= 80).slice(0, 3), dbg: String(typeof resp === "string" ? resp : JSON.stringify(resp)).slice(0, 300) });
+      } catch (e) { return J({ add: [], err: String(e.message || e) }); }
     }
     return env.ASSETS.fetch(r);
   },

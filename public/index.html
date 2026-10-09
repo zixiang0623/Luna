@@ -202,10 +202,12 @@ async function gen(){
     q=q||requestAnimationFrame(()=>{q=0;up()})}}
  }catch(e){if(e.name!="AbortError")m.err=e.message}
  cancelAnimationFrame(q);m.ms=performance.now()-t0;up();busy=false;ctl=null;document.body.classList.remove("think");save();ui();paint();learn(m,c)}
-async function learn(m,c){if(cfg.mem===false||m.err||!m.content)return;const t=c.msgs[c.msgs.indexOf(m)-1]?.content;if(!t||t.length<6)return;
- try{const r=await fetch("/api/memory",{method:"POST",headers:{"content-type":"application/json","x-luna-key":cfg.key},body:JSON.stringify({text:t,known:mem})}).then(r=>r.json());
-  const add=(r.add||[]).map(x=>String(x).trim().slice(0,80)).filter(x=>x&&!mem.some(y=>y==x||y.includes(x)||x.includes(y)));
-  if(add.length){mem.push(...add);mem=mem.slice(-50);saveMem();m.mem=add;save();const e=$("#msgs").lastElementChild;if(e&&e._m==m)draw(e,m,false)}}catch{}}
+async function learn(m,c){if(cfg.mem===false||m.err||!m.content)return;const t=c.msgs[c.msgs.indexOf(m)-1]?.content;if(!t||t.length<4)return;
+ let add=[];
+ try{const r=await fetch("/api/memory",{method:"POST",headers:{"content-type":"application/json","x-luna-key":cfg.key},body:JSON.stringify({text:t,known:mem})}).then(r=>r.json());console.debug("[Luna memory]",r);add=r.add||[]}catch(e){console.warn("[Luna memory]",e)}
+ if(!add.length&&/覚えて|おぼえて|記憶して|メモして/.test(t))add=[t.replace(/(を|って|と)?(覚えて|おぼえて|記憶して|メモして)\S*/g,"").replace(/[、。\s]+$/,"").trim()||t];
+ add=add.map(x=>String(x).trim().slice(0,80)).filter(x=>x&&!mem.some(y=>y==x||y.includes(x)||x.includes(y)));
+ if(add.length){mem.push(...add);mem=mem.slice(-50);saveMem();m.mem=add;save();const e=$("#msgs").lastElementChild;if(e&&e._m==m)draw(e,m,false)}}
 const go=()=>{if(busy)return ctl?.abort();const t=$("#in").value;$("#in").value="";$("#in").style.height="";send(t)};
 
 /* ===== イベント ===== */
